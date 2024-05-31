@@ -1,4 +1,4 @@
-package category
+package application_category
 
 import (
 	"testing"

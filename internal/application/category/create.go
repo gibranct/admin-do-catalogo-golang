@@ -1,4 +1,4 @@
-package category
+package application_category
 
 import (
 	"github.com.br/gibranct/admin-do-catalogo/internal/domain/category"
