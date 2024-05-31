@@ -19,11 +19,11 @@ type Category struct {
 
 type CategoryGateway interface {
 	Create(category Category) (Category, error)
-	DeleteById(categoryId string) error
-	FindById(categoryId string) (Category, error)
+	DeleteById(categoryId int64) error
+	FindById(categoryId int64) (Category, error)
 	Update(category Category) (Category, error)
 	FindAll(query domain.SearchQuery) domain.Pagination[Category]
-	ExistsByIds(categoryIds []string) []string
+	ExistsByIds(categoryIds []int64) []int64
 }
 
 func NewCategory(
