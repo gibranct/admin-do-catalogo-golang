@@ -22,9 +22,7 @@ func (m *CategoryGatewayMock) DeleteById(categoryId int64) error {
 
 func (m *CategoryGatewayMock) FindById(categoryId int64) (category.Category, error) {
 	args := m.Called(categoryId)
-	return category.Category{
-		ID: categoryId,
-	}, args.Error(1)
+	return args.Get(0).(category.Category), args.Error(1)
 }
 
 func (m *CategoryGatewayMock) Update(c category.Category) (category.Category, error) {
