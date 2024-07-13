@@ -14,7 +14,7 @@ type Category struct {
 	IsActive    bool
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
-	DeletedAt   time.Time
+	DeletedAt   *time.Time
 }
 
 type CategoryGateway interface {
@@ -31,10 +31,10 @@ func NewCategory(
 	description string,
 	isActive bool,
 ) *Category {
-	now := time.Now()
-	var deletedAt time.Time
+	now := time.Now().UTC()
+	var deletedAt *time.Time = nil
 	if !isActive {
-		deletedAt = now
+		deletedAt = &now
 	}
 	return &Category{
 		Name:        name,
@@ -47,19 +47,17 @@ func NewCategory(
 }
 
 func (c *Category) Deactivate() *Category {
-	if (c.DeletedAt == time.Time{}) {
-		c.DeletedAt = time.Now()
-	}
-	c.DeletedAt = time.Now()
+	now := time.Now().UTC()
+	c.DeletedAt = &now
 	c.IsActive = false
-	c.UpdatedAt = time.Now()
+	c.UpdatedAt = now
 	return c
 }
 
 func (c *Category) Activate() *Category {
-	c.DeletedAt = time.Time{}
+	c.DeletedAt = nil
 	c.IsActive = true
-	c.UpdatedAt = time.Now()
+	c.UpdatedAt = time.Now().UTC()
 	return c
 }
 
@@ -74,7 +72,7 @@ func (c *Category) Update(
 	}
 	c.Name = name
 	c.Description = description
-	c.UpdatedAt = time.Now()
+	c.UpdatedAt = time.Now().UTC()
 	return c
 }
 

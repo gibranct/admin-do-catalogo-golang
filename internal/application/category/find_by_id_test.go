@@ -23,8 +23,9 @@ func TestFindCategoryByIdUseCase(t *testing.T) {
 		Name:        "A",
 		Description: "B",
 		IsActive:    true,
-		CreatedAt:   time.Now(),
-		UpdatedAt:   time.Now(),
+		CreatedAt:   time.Now().UTC(),
+		UpdatedAt:   time.Now().UTC(),
+		DeletedAt:   nil,
 	}
 	categoryGatewayMock.On("FindById", categoryId).Return(cate, nil)
 

@@ -15,7 +15,7 @@ type CategoryOutput struct {
 	IsActive    bool
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
-	DeletedAt   time.Time
+	DeletedAt   *time.Time
 }
 
 type GetCategoryByIdUseCase interface {

@@ -3,7 +3,9 @@ package models
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"log"
+	"os"
 	"testing"
 	"time"
 
@@ -21,7 +23,23 @@ type databaseContainer struct {
 	connectionString string
 }
 
-func setup(ctx context.Context) (*databaseContainer, error) {
+var dbContainer *databaseContainer
+
+func TestMain(t *testing.M) {
+	ctx := context.Background()
+	defer func() {
+		if r := recover(); r != nil {
+			dbContainer.PostgresContainer.Terminate(ctx)
+			fmt.Println("Panic")
+		}
+	}()
+	setup(ctx)
+	code := t.Run()
+	dbContainer.PostgresContainer.Terminate(ctx)
+	os.Exit(code)
+}
+
+func setup(ctx context.Context) error {
 	container, err := postgres.Run(
 		ctx,
 		"postgres:15.7-alpine",
@@ -36,27 +54,27 @@ func setup(ctx context.Context) (*databaseContainer, error) {
 		log.Fatalf("Could not start container: %s", err)
 	}
 
-	connString, err := container.ConnectionString(ctx)
+	connString, err := container.ConnectionString(ctx, "sslmode=disable")
 
 	if err != nil {
 		log.Fatalf("Could not get connection string: %s", err)
 	}
 
-	return &databaseContainer{
+	dbContainer = &databaseContainer{
+		connectionString:  connString,
 		PostgresContainer: container,
-		connectionString:  connString + "sslmode=disable",
-	}, nil
+	}
+
+	return nil
 }
 
 func TestCreateCategory(t *testing.T) {
-	ctx := context.Background()
-	container, _ := setup(ctx)
-	db, err := sql.Open("postgres", container.connectionString)
+	db, err := sql.Open("postgres", dbContainer.connectionString)
 	if err != nil {
 		log.Fatalf("Failed to create DB connection: %s", err)
 	}
+	db.Exec("DELETE FROM categories")
 	defer db.Close()
-	defer container.Terminate(ctx)
 	cg := NewCategoryGateway(db)
 	category := category.NewCategory("drinks", "drinks desc", true)
 	err = cg.Create(category)
@@ -67,5 +85,24 @@ func TestCreateCategory(t *testing.T) {
 	assert.NotNil(t, category.ID)
 	assert.NotNil(t, category.CreatedAt)
 	assert.NotNil(t, category.UpdatedAt)
-	assert.Equal(t, time.Time{}, category.DeletedAt)
+	assert.Nil(t, category.DeletedAt)
+}
+
+func TestFindById(t *testing.T) {
+	db, err := sql.Open("postgres", dbContainer.connectionString)
+	if err != nil {
+		log.Fatalf("Failed to create DB connection: %s", err)
+	}
+	db.Exec("DELETE FROM categories")
+	defer db.Close()
+	cg := NewCategoryGateway(db)
+	category := category.NewCategory("drinks", "drinks desc", true)
+	cg.Create(category)
+
+	categoryFound, err := cg.FindById(category.ID)
+	assert.Nil(t, err)
+	assert.Equal(t, category.ID, categoryFound.ID)
+	assert.Equal(t, category.Name, categoryFound.Name)
+	assert.Equal(t, category.Description, categoryFound.Description)
+	assert.Equal(t, category.IsActive, categoryFound.IsActive)
 }

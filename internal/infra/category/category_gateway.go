@@ -34,8 +34,30 @@ func (cg *CategoryGateway) DeleteById(categoryId int64) error {
 	return err
 }
 
-func (gate *CategoryGateway) FindById(categoryId int64) (category.Category, error) {
-	return *&category.Category{}, nil
+func (cg *CategoryGateway) FindById(categoryId int64) (*category.Category, error) {
+	query := `
+	 SELECT id, name, description, is_active, created_at, updated_at, deleted_at FROM
+	 categories 
+	 where id = $1
+	`
+
+	category := category.Category{}
+
+	err := cg.Db.QueryRow(query, categoryId).Scan(
+		&category.ID,
+		&category.Name,
+		&category.Description,
+		&category.IsActive,
+		&category.CreatedAt,
+		&category.UpdatedAt,
+		&category.DeletedAt,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &category, err
 }
 
 func (gate *CategoryGateway) Update(c category.Category) (category.Category, error) {

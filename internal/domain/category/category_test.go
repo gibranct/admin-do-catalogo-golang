@@ -3,6 +3,7 @@ package category
 import (
 	"strings"
 	"testing"
+	"time"
 
 	"github.com.br/gibranct/admin-do-catalogo/pkg/notification"
 	"github.com/stretchr/testify/assert"
@@ -24,7 +25,7 @@ func TestCategoryCreation(t *testing.T) {
 	assert.Equal(t, isActive, c.IsActive)
 	assert.False(t, c.CreatedAt.IsZero())
 	assert.False(t, c.UpdatedAt.IsZero())
-	assert.True(t, c.DeletedAt.IsZero())
+	assert.Nil(t, c.DeletedAt)
 }
 
 func TestCategoryDeactivate(t *testing.T) {
@@ -34,11 +35,13 @@ func TestCategoryDeactivate(t *testing.T) {
 	c := NewCategory(name, desc, isActive)
 	updatedAt := c.UpdatedAt
 
+	time.Sleep(1 * time.Millisecond)
+
 	c.Deactivate()
 
 	assert.False(t, c.IsActive)
 	assert.True(t, c.UpdatedAt.After(updatedAt))
-	assert.False(t, c.DeletedAt.IsZero())
+	assert.NotNil(t, c.DeletedAt)
 }
 
 func TestCategoryActivate(t *testing.T) {
@@ -53,7 +56,7 @@ func TestCategoryActivate(t *testing.T) {
 
 	assert.True(t, c.IsActive)
 	assert.True(t, c.UpdatedAt.After(updatedAt))
-	assert.True(t, c.DeletedAt.IsZero())
+	assert.Nil(t, c.DeletedAt)
 }
 
 func TestCategoryUpdateToActive(t *testing.T) {
@@ -65,13 +68,15 @@ func TestCategoryUpdateToActive(t *testing.T) {
 
 	assert.False(t, c.IsActive)
 
+	time.Sleep(1 * time.Millisecond)
+
 	c.Update(name, desc, isActive)
 
 	assert.Equal(t, name, c.Name)
 	assert.Equal(t, desc, c.Description)
 	assert.True(t, c.IsActive)
 	assert.True(t, c.UpdatedAt.After(updatedAt))
-	assert.True(t, c.DeletedAt.IsZero())
+	assert.Nil(t, c.DeletedAt)
 }
 
 func TestCategoryUpdateToActiveWithInvalidName(t *testing.T) {
@@ -122,11 +127,13 @@ func TestCategoryUpdateToNotActive(t *testing.T) {
 
 	assert.True(t, c.IsActive)
 
+	time.Sleep(1 * time.Millisecond)
+
 	c.Update(name, desc, isActive)
 
 	assert.Equal(t, name, c.Name)
 	assert.Equal(t, desc, c.Description)
 	assert.False(t, c.IsActive)
 	assert.True(t, c.UpdatedAt.After(updatedAt))
-	assert.False(t, c.DeletedAt.IsZero())
+	assert.NotNil(t, c.DeletedAt)
 }
