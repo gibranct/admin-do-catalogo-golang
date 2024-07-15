@@ -1,0 +1,8 @@
+POST http://localhost:4000/v1/categories HTTP/1.1
+Host: localhost:4000
+Content-Type: application/json
+
+{
+    "name": "Drinks",
+    "description": "drinks description"
+}

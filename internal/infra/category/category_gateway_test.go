@@ -1,4 +1,4 @@
-package models
+package gateway
 
 import (
 	"context"
@@ -75,7 +75,7 @@ func TestCreateCategory(t *testing.T) {
 	db.Exec("DELETE FROM categories")
 	defer db.Close()
 	cg := NewCategoryGateway(db)
-	category := category.NewCategory("drinks", "drinks desc", true)
+	category := category.NewCategory("drinks", "drinks desc")
 	err = cg.Create(category)
 	if err != nil {
 		log.Fatalf("Could not save category: %s", err)
@@ -95,7 +95,7 @@ func TestFindById(t *testing.T) {
 	db.Exec("DELETE FROM categories")
 	defer db.Close()
 	cg := NewCategoryGateway(db)
-	category := category.NewCategory("drinks", "drinks desc", true)
+	category := category.NewCategory("drinks", "drinks desc")
 	cg.Create(category)
 
 	categoryFound, err := cg.FindById(category.ID)
@@ -114,10 +114,10 @@ func TestUpdate(t *testing.T) {
 	db.Exec("DELETE FROM categories")
 	defer db.Close()
 	cg := NewCategoryGateway(db)
-	category := category.NewCategory("drinks", "drinks desc", true)
+	category := category.NewCategory("drinks", "drinks desc")
 	cg.Create(category)
 
-	updatedCategory := category.Update("new name", "new description", true)
+	updatedCategory := category.Update("new name", "new description")
 
 	err = cg.Update(*updatedCategory)
 
@@ -138,9 +138,9 @@ func TestFindAllWithFilters(t *testing.T) {
 	db.Exec("DELETE FROM categories")
 	defer db.Close()
 	cg := NewCategoryGateway(db)
-	category1 := category.NewCategory("movie", "drinks desc", true)
-	category2 := category.NewCategory("tv show", "drinks desc", true)
-	category3 := category.NewCategory("documentary", "drinks desc", true)
+	category1 := category.NewCategory("movie", "drinks desc")
+	category2 := category.NewCategory("tv show", "drinks desc")
+	category3 := category.NewCategory("documentary", "drinks desc")
 	cg.Create(category1)
 	cg.Create(category2)
 	cg.Create(category3)
@@ -170,9 +170,9 @@ func TestFindAllWithoutFilters(t *testing.T) {
 	db.Exec("DELETE FROM categories")
 	defer db.Close()
 	cg := NewCategoryGateway(db)
-	category1 := category.NewCategory("movie", "drinks desc", true)
-	category2 := category.NewCategory("tv show", "drinks desc", true)
-	category3 := category.NewCategory("documentary", "drinks desc", true)
+	category1 := category.NewCategory("movie", "drinks desc")
+	category2 := category.NewCategory("tv show", "drinks desc")
+	category3 := category.NewCategory("documentary", "drinks desc")
 	cg.Create(category1)
 	cg.Create(category2)
 	cg.Create(category3)
@@ -205,9 +205,9 @@ func TestExistsByIds(t *testing.T) {
 	db.Exec("DELETE FROM categories")
 	defer db.Close()
 	cg := NewCategoryGateway(db)
-	category1 := category.NewCategory("movie", "drinks desc", true)
-	category2 := category.NewCategory("tv show", "drinks desc", true)
-	category3 := category.NewCategory("documentary", "drinks desc", true)
+	category1 := category.NewCategory("movie", "drinks desc")
+	category2 := category.NewCategory("tv show", "drinks desc")
+	category3 := category.NewCategory("documentary", "drinks desc")
 	cg.Create(category1)
 	cg.Create(category2)
 	cg.Create(category3)

@@ -1,4 +1,4 @@
-package models
+package gateway
 
 import (
 	"database/sql"

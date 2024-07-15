@@ -1,4 +1,4 @@
-package application_category
+package category_usecase
 
 import (
 	"errors"
@@ -18,7 +18,7 @@ func TestFindCategoryByIdUseCase(t *testing.T) {
 	sut := DefaultGetCategoryByIdUseCase{
 		gateway: categoryGatewayMock,
 	}
-	cate := category.Category{
+	cate := &category.Category{
 		ID:          categoryId,
 		Name:        "A",
 		Description: "B",
@@ -54,7 +54,7 @@ func TestFailToFindCategoryById(t *testing.T) {
 	expectedErr := domain.NotFoundException{
 		Message: "Could not find category for id: 54",
 	}
-	emptyCate := category.Category{}
+	emptyCate := &category.Category{}
 	categoryGatewayMock.On("FindById", categoryId).Return(emptyCate, errors.New(""))
 
 	foundCate, err := sut.Execute(categoryId)

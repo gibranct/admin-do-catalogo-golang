@@ -3,8 +3,10 @@ module github.com.br/gibranct/admin-do-catalogo
 go 1.22.1
 
 require (
+	github.com/go-chi/chi v1.5.5
 	github.com/lib/pq v1.10.9
 	github.com/stretchr/testify v1.9.0
+	github.com/testcontainers/testcontainers-go v0.32.0
 	github.com/testcontainers/testcontainers-go/modules/postgres v0.32.0
 )
 
@@ -48,7 +50,6 @@ require (
 	github.com/shoenig/go-m1cpu v0.1.6 // indirect
 	github.com/sirupsen/logrus v1.9.3 // indirect
 	github.com/stretchr/objx v0.5.2 // indirect
-	github.com/testcontainers/testcontainers-go v0.32.0 // indirect
 	github.com/tklauser/go-sysconf v0.3.12 // indirect
 	github.com/tklauser/numcpus v0.6.1 // indirect
 	github.com/yusufpapurcu/wmi v1.2.3 // indirect

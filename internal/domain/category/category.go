@@ -18,31 +18,26 @@ type Category struct {
 }
 
 type CategoryGateway interface {
-	Create(category Category) (Category, error)
+	Create(category *Category) error
 	DeleteById(categoryId int64) error
-	FindById(categoryId int64) (Category, error)
-	Update(category Category) (Category, error)
-	FindAll(query domain.SearchQuery) domain.Pagination[Category]
-	ExistsByIds(categoryIds []int64) []int64
+	FindById(categoryId int64) (*Category, error)
+	Update(category Category) error
+	FindAll(query domain.SearchQuery) (*domain.Pagination[Category], error)
+	ExistsByIds(categoryIds []int64) ([]int64, error)
 }
 
 func NewCategory(
 	name string,
 	description string,
-	isActive bool,
 ) *Category {
 	now := time.Now().UTC()
-	var deletedAt *time.Time = nil
-	if !isActive {
-		deletedAt = &now
-	}
 	return &Category{
 		Name:        name,
 		Description: description,
-		IsActive:    isActive,
+		IsActive:    true,
 		CreatedAt:   now,
 		UpdatedAt:   now,
-		DeletedAt:   deletedAt,
+		DeletedAt:   nil,
 	}
 }
 
@@ -63,13 +58,7 @@ func (c *Category) Activate() *Category {
 
 func (c *Category) Update(
 	name, description string,
-	isActive bool,
 ) *Category {
-	if isActive {
-		c.Activate()
-	} else {
-		c.Deactivate()
-	}
 	c.Name = name
 	c.Description = description
 	c.UpdatedAt = time.Now().UTC()

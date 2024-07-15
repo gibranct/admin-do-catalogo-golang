@@ -1,4 +1,4 @@
-package application_category
+package category_usecase
 
 import (
 	"fmt"

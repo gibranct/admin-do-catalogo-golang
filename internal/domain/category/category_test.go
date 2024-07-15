@@ -13,7 +13,7 @@ func TestCategoryCreation(t *testing.T) {
 	name := "Drinks"
 	desc := "Drinks desc"
 	isActive := true
-	c := NewCategory(name, desc, isActive)
+	c := NewCategory(name, desc)
 
 	n := notification.CreateNotification()
 
@@ -31,8 +31,7 @@ func TestCategoryCreation(t *testing.T) {
 func TestCategoryDeactivate(t *testing.T) {
 	name := "Drinks"
 	desc := "Drinks desc"
-	isActive := true
-	c := NewCategory(name, desc, isActive)
+	c := NewCategory(name, desc)
 	updatedAt := c.UpdatedAt
 
 	time.Sleep(1 * time.Millisecond)
@@ -47,8 +46,7 @@ func TestCategoryDeactivate(t *testing.T) {
 func TestCategoryActivate(t *testing.T) {
 	name := "Drinks"
 	desc := "Drinks desc"
-	isActive := true
-	c := NewCategory(name, desc, isActive)
+	c := NewCategory(name, desc)
 	updatedAt := c.UpdatedAt
 
 	c.Deactivate()
@@ -62,15 +60,16 @@ func TestCategoryActivate(t *testing.T) {
 func TestCategoryUpdateToActive(t *testing.T) {
 	name := "new Drinks"
 	desc := "Drinks desc"
-	isActive := true
-	c := NewCategory("Drinks", "desc", false)
+	c := NewCategory("Drinks", "desc")
+	c.Deactivate()
 	updatedAt := c.UpdatedAt
 
 	assert.False(t, c.IsActive)
 
 	time.Sleep(1 * time.Millisecond)
 
-	c.Update(name, desc, isActive)
+	c.Update(name, desc)
+	c.Activate()
 
 	assert.Equal(t, name, c.Name)
 	assert.Equal(t, desc, c.Description)
@@ -102,7 +101,7 @@ func TestCategoryUpdateToActiveWithInvalidName(t *testing.T) {
 		},
 	}
 	for _, v := range tests {
-		c := NewCategory(v.name, "Drinks desc", true)
+		c := NewCategory(v.name, "Drinks desc")
 
 		n := notification.CreateNotification()
 
@@ -121,15 +120,15 @@ func TestCategoryUpdateToActiveWithInvalidName(t *testing.T) {
 func TestCategoryUpdateToNotActive(t *testing.T) {
 	name := "new Drinks"
 	desc := "Drinks desc"
-	isActive := false
-	c := NewCategory("Drinks", "desc", true)
+	c := NewCategory("Drinks", "desc")
 	updatedAt := c.UpdatedAt
 
 	assert.True(t, c.IsActive)
 
 	time.Sleep(1 * time.Millisecond)
 
-	c.Update(name, desc, isActive)
+	c.Update(name, desc)
+	c.Deactivate()
 
 	assert.Equal(t, name, c.Name)
 	assert.Equal(t, desc, c.Description)

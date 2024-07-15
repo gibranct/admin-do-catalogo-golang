@@ -1,4 +1,4 @@
-package application_category
+package category_usecase
 
 import (
 	"github.com.br/gibranct/admin-do-catalogo/internal/domain/category"
@@ -12,25 +12,23 @@ type CreateCategoryOutput struct {
 type CreateCategoryCommand struct {
 	Name        string
 	Description string
-	IsActive    bool
 }
 
 type CreateCategoryUseCase interface {
-	Execute(c CreateCategoryCommand) (notification.Notification, CreateCategoryOutput)
+	Execute(c CreateCategoryCommand) (*notification.Notification, *CreateCategoryOutput)
 }
 
 type DefaultCreateCategoryUseCase struct {
-	gateway category.CategoryGateway
+	Gateway category.CategoryGateway
 }
 
-func (useCase *DefaultCreateCategoryUseCase) Execute(
+func (useCase DefaultCreateCategoryUseCase) Execute(
 	command CreateCategoryCommand,
 ) (*notification.Notification, *CreateCategoryOutput) {
 
 	category := category.NewCategory(
 		command.Name,
 		command.Description,
-		command.IsActive,
 	)
 
 	n := notification.CreateNotification()
@@ -41,7 +39,7 @@ func (useCase *DefaultCreateCategoryUseCase) Execute(
 		return n, nil
 	}
 
-	nCategory, err := useCase.gateway.Create(*category)
+	err := useCase.Gateway.Create(category)
 
 	if err != nil {
 		n.Add(err)
@@ -49,6 +47,6 @@ func (useCase *DefaultCreateCategoryUseCase) Execute(
 	}
 
 	return nil, &CreateCategoryOutput{
-		ID: nCategory.ID,
+		ID: category.ID,
 	}
 }
