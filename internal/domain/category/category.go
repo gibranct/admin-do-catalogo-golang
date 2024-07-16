@@ -19,7 +19,6 @@ type Category struct {
 
 type CategoryGateway interface {
 	Create(category *Category) error
-	DeleteById(categoryId int64) error
 	FindById(categoryId int64) (*Category, error)
 	Update(category Category) error
 	FindAll(query domain.SearchQuery) (*domain.Pagination[Category], error)

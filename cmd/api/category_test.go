@@ -27,6 +27,15 @@ func (m *CreateCategoryUseCaseMock) Execute(c cs.CreateCategoryCommand) (*notifi
 	return args.Get(0).(*notification.Notification), args.Get(1).(*cs.CreateCategoryOutput)
 }
 
+type DeleteCategoryUseCaseMock struct {
+	mock.Mock
+}
+
+func (m *DeleteCategoryUseCaseMock) Execute(id int64) error {
+	args := m.Called(id)
+	return args.Error(0)
+}
+
 type GetCategoryByIdUseCaseMock struct {
 	mock.Mock
 }
@@ -35,7 +44,6 @@ func (m *GetCategoryByIdUseCaseMock) Execute(id int64) (*cs.CategoryOutput, erro
 	args := m.Called(id)
 	return args.Get(0).(*cs.CategoryOutput), args.Error(1)
 }
-
 func TestCreateCategory(t *testing.T) {
 	createUseCaseMock := new(CreateCategoryUseCaseMock)
 	app := &application{
@@ -178,4 +186,29 @@ func TestGetCategoryByIdWhenIdIsInvalid(t *testing.T) {
 	assert.Equal(t, 0, len(body.Errors))
 	assert.Equal(t, http.StatusNotFound, w.Code)
 	getByIdUseCaseMock.AssertNumberOfCalls(t, "Execute", 0)
+}
+
+func TestDeleteCategory(t *testing.T) {
+	deleteCategoryUseCaseMock := new(DeleteCategoryUseCaseMock)
+	app := &application{
+		useCases: usecase.UseCases{
+			Category: usecase.CategoryUseCase{
+				Delete: deleteCategoryUseCaseMock,
+			},
+		},
+	}
+	id := int64(488)
+	req := httptest.NewRequest(http.MethodGet, "/v1/categories/{id}", nil)
+	w := httptest.NewRecorder()
+	rctx := chi.NewRouteContext()
+	rctx.URLParams.Add("id", strconv.FormatInt(id, 10))
+	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+
+	deleteCategoryUseCaseMock.On("Execute", id).Return(nil)
+
+	app.deleteCategoryHandler(w, req)
+
+	assert.Equal(t, http.StatusNoContent, w.Code)
+	deleteCategoryUseCaseMock.AssertExpectations(t)
+	deleteCategoryUseCaseMock.AssertNumberOfCalls(t, "Execute", 1)
 }

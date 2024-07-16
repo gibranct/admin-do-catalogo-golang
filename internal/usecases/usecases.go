@@ -26,6 +26,9 @@ func NewUseCases(db *sql.DB) UseCases {
 			FindOne: &categoryUsecase.DefaultGetCategoryByIdUseCase{
 				Gateway: cGateway,
 			},
+			Delete: &categoryUsecase.DefaultDeleteCategoryUseCase{
+				Gateway: cGateway,
+			},
 		},
 	}
 }

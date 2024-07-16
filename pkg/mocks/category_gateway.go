@@ -15,11 +15,6 @@ func (m *CategoryGatewayMock) Create(c *category.Category) error {
 	return args.Error(0)
 }
 
-func (m *CategoryGatewayMock) DeleteById(categoryId int64) error {
-	args := m.Called(categoryId)
-	return args.Error(0)
-}
-
 func (m *CategoryGatewayMock) FindById(categoryId int64) (*category.Category, error) {
 	args := m.Called(categoryId)
 	return args.Get(0).(*category.Category), args.Error(1)

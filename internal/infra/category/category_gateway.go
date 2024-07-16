@@ -29,14 +29,6 @@ func (cg *CategoryGateway) Create(c *category.Category) error {
 	return cg.Db.QueryRow(query, args...).Scan(&c.ID)
 }
 
-func (cg *CategoryGateway) DeleteById(categoryId int64) error {
-	query := `
-	 DELETE from categories where id = $1
-	`
-	_, err := cg.Db.Exec(query, categoryId)
-	return err
-}
-
 func (cg *CategoryGateway) FindById(categoryId int64) (*category.Category, error) {
 	query := `
 	 SELECT id, name, description, is_active, created_at, updated_at, deleted_at FROM

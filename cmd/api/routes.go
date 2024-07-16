@@ -15,6 +15,7 @@ func (app *application) routes() http.Handler {
 	router.Route("/v1", func(r chi.Router) {
 		r.Post("/categories", app.createCategoryHandler)
 		r.Get("/categories/{id}", app.getCategoryByIdHandler)
+		r.Delete("/categories/{id}", app.deleteCategoryHandler)
 	})
 
 	return router
