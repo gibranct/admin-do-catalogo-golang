@@ -6,3 +6,8 @@ Content-Type: application/json
     "name": "Drinks",
     "description": "drinks description"
 }
+
+###
+
+GET http://localhost:4000/v1/categories/1 HTTP/1.1
+Host: localhost:4000

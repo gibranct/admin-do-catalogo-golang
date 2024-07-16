@@ -23,6 +23,9 @@ func NewUseCases(db *sql.DB) UseCases {
 			Create: categoryUsecase.DefaultCreateCategoryUseCase{
 				Gateway: cGateway,
 			},
+			FindOne: &categoryUsecase.DefaultGetCategoryByIdUseCase{
+				Gateway: cGateway,
+			},
 		},
 	}
 }

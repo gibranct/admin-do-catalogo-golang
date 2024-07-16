@@ -60,7 +60,7 @@ func (cg *CategoryGateway) FindById(categoryId int64) (*category.Category, error
 		return nil, err
 	}
 
-	return &category, err
+	return &category, nil
 }
 
 func (cg *CategoryGateway) Update(c category.Category) error {

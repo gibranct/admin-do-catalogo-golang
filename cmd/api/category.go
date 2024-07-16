@@ -1,16 +1,18 @@
 package main
 
 import (
+	"errors"
 	"net/http"
+	"strconv"
 
-	category_usecase "github.com.br/gibranct/admin-do-catalogo/internal/usecases/category"
+	categoryUseCase "github.com.br/gibranct/admin-do-catalogo/internal/usecases/category"
+	"github.com/go-chi/chi/v5"
 )
 
 func (app *application) createCategoryHandler(w http.ResponseWriter, r *http.Request) {
 	var input struct {
 		Name        string `json:"name"`
 		Description string `json:"description"`
-		IsActive    bool   `json:"active"`
 	}
 
 	err := app.readJSON(w, r, &input)
@@ -19,7 +21,7 @@ func (app *application) createCategoryHandler(w http.ResponseWriter, r *http.Req
 		return
 	}
 
-	ccc := category_usecase.CreateCategoryCommand{
+	ccc := categoryUseCase.CreateCategoryCommand{
 		Name:        input.Name,
 		Description: input.Description,
 	}
@@ -32,6 +34,32 @@ func (app *application) createCategoryHandler(w http.ResponseWriter, r *http.Req
 	}
 	err = app.writeError(w, http.StatusBadRequest, "Could not save category", noti)
 	if err != nil {
-		app.serverErrorResponse(w, err)
+		app.serverErrorResponse(w)
+	}
+}
+
+func (app *application) getCategoryByIdHandler(w http.ResponseWriter, r *http.Request) {
+	categoryIdStr := chi.URLParam(r, "id")
+	categoryId, err := strconv.ParseInt(categoryIdStr, 10, 64)
+	if err != nil {
+		app.badRequestResponse(w, errors.New("invalid id"))
+		return
+	}
+
+	if categoryId <= 0 {
+		app.notFoundResponse(w)
+		return
+	}
+
+	out, err := app.useCases.Category.FindOne.Execute(categoryId)
+
+	if err != nil {
+		app.notFoundResponse(w)
+		return
+	}
+
+	err = app.writeJson(w, http.StatusOK, out, nil)
+	if err != nil {
+		app.serverErrorResponse(w)
 	}
 }

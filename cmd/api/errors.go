@@ -8,23 +8,16 @@ import (
 )
 
 func (app *application) badRequestResponse(w http.ResponseWriter, err error) {
-	app.errorResponse(w, http.StatusBadRequest, err.Error())
-}
-
-func (app *application) errorResponse(w http.ResponseWriter, status int, message any) {
-	env := envelope{"error": message}
-
-	err := app.writeJson(w, status, env, nil)
-
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-	}
+	app.writeError(w, http.StatusBadRequest, err.Error(), nil)
 }
 
 func (app *application) writeError(w http.ResponseWriter, status int, msg string, noti *notification.Notification) error {
 	errors := []string{}
-	for _, err := range noti.GetErrors() {
-		errors = append(errors, err.Error())
+
+	if noti != nil {
+		for _, err := range noti.GetErrors() {
+			errors = append(errors, err.Error())
+		}
 	}
 
 	data := envelope{"message": msg, "errors": errors}
@@ -52,7 +45,12 @@ func (app *application) writeJson(w http.ResponseWriter, status int, data any, h
 	return nil
 }
 
-func (app *application) serverErrorResponse(w http.ResponseWriter, err error) {
+func (app *application) serverErrorResponse(w http.ResponseWriter) {
 	message := "the server encountered a problem and could not process your request"
 	app.writeError(w, http.StatusInternalServerError, message, nil)
+}
+
+func (app *application) notFoundResponse(w http.ResponseWriter) {
+	message := "the requested resource could not be found"
+	app.writeError(w, http.StatusNotFound, message, nil)
 }

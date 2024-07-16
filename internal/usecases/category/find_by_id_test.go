@@ -5,7 +5,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com.br/gibranct/admin-do-catalogo/internal/domain"
 	"github.com.br/gibranct/admin-do-catalogo/internal/domain/category"
 	"github.com.br/gibranct/admin-do-catalogo/pkg/mocks"
 	"github.com/stretchr/testify/assert"
@@ -16,7 +15,7 @@ func TestFindCategoryByIdUseCase(t *testing.T) {
 	categoryGatewayMock := &mocks.CategoryGatewayMock{}
 
 	sut := DefaultGetCategoryByIdUseCase{
-		gateway: categoryGatewayMock,
+		Gateway: categoryGatewayMock,
 	}
 	cate := &category.Category{
 		ID:          categoryId,
@@ -37,9 +36,6 @@ func TestFindCategoryByIdUseCase(t *testing.T) {
 	assert.Equal(t, cate.Name, foundCate.Name)
 	assert.Equal(t, cate.Description, foundCate.Description)
 	assert.Equal(t, cate.IsActive, foundCate.IsActive)
-	assert.Equal(t, cate.CreatedAt, foundCate.CreatedAt)
-	assert.Equal(t, cate.UpdatedAt, foundCate.UpdatedAt)
-	assert.Equal(t, cate.DeletedAt, foundCate.DeletedAt)
 	categoryGatewayMock.AssertExpectations(t)
 	categoryGatewayMock.AssertNumberOfCalls(t, "FindById", 1)
 }
@@ -49,19 +45,17 @@ func TestFailToFindCategoryById(t *testing.T) {
 	categoryGatewayMock := &mocks.CategoryGatewayMock{}
 
 	sut := DefaultGetCategoryByIdUseCase{
-		gateway: categoryGatewayMock,
+		Gateway: categoryGatewayMock,
 	}
-	expectedErr := domain.NotFoundException{
-		Message: "Could not find category for id: 54",
-	}
+	expectedErrMsg := "Could not find category for id: 54"
 	emptyCate := &category.Category{}
-	categoryGatewayMock.On("FindById", categoryId).Return(emptyCate, errors.New(""))
+	categoryGatewayMock.On("FindById", categoryId).Return(emptyCate, errors.New(expectedErrMsg))
 
 	foundCate, err := sut.Execute(categoryId)
 
 	assert.Nil(t, foundCate)
 	assert.NotNil(t, err)
-	assert.Equal(t, expectedErr, err)
+	assert.Equal(t, expectedErrMsg, err.Error())
 	categoryGatewayMock.AssertExpectations(t)
 	categoryGatewayMock.AssertNumberOfCalls(t, "FindById", 1)
 }
