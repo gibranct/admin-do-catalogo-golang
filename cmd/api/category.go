@@ -64,7 +64,7 @@ func (app *application) getCategoryByIdHandler(w http.ResponseWriter, r *http.Re
 	}
 }
 
-func (app *application) deleteCategoryHandler(w http.ResponseWriter, r *http.Request) {
+func (app *application) deactivateCategoryHandler(w http.ResponseWriter, r *http.Request) {
 	categoryIdStr := chi.URLParam(r, "id")
 	categoryId, err := strconv.ParseInt(categoryIdStr, 10, 64)
 	if err != nil {
@@ -77,7 +77,30 @@ func (app *application) deleteCategoryHandler(w http.ResponseWriter, r *http.Req
 		return
 	}
 
-	err = app.useCases.Category.Delete.Execute(categoryId)
+	err = app.useCases.Category.Deactivate.Execute(categoryId)
+
+	if err != nil {
+		app.notFoundResponse(w)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
+}
+
+func (app *application) activateCategoryHandler(w http.ResponseWriter, r *http.Request) {
+	categoryIdStr := chi.URLParam(r, "id")
+	categoryId, err := strconv.ParseInt(categoryIdStr, 10, 64)
+	if err != nil {
+		app.badRequestResponse(w, errors.New("invalid id"))
+		return
+	}
+
+	if categoryId <= 0 {
+		app.notFoundResponse(w)
+		return
+	}
+
+	err = app.useCases.Category.Activate.Execute(categoryId)
 
 	if err != nil {
 		app.notFoundResponse(w)

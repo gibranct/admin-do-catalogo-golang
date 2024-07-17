@@ -8,9 +8,10 @@ import (
 )
 
 type CategoryUseCase struct {
-	Create  categoryUsecase.CreateCategoryUseCase
-	FindOne categoryUsecase.GetCategoryByIdUseCase
-	Delete  categoryUsecase.DeleteCategoryUseCase
+	Create     categoryUsecase.CreateCategoryUseCase
+	FindOne    categoryUsecase.GetCategoryByIdUseCase
+	Activate   categoryUsecase.ActivateCategoryUseCase
+	Deactivate categoryUsecase.DeactivateCategoryUseCase
 }
 type UseCases struct {
 	Category CategoryUseCase
@@ -26,7 +27,10 @@ func NewUseCases(db *sql.DB) UseCases {
 			FindOne: &categoryUsecase.DefaultGetCategoryByIdUseCase{
 				Gateway: cGateway,
 			},
-			Delete: &categoryUsecase.DefaultDeleteCategoryUseCase{
+			Activate: &categoryUsecase.DefaultActivateCategoryUseCase{
+				Gateway: cGateway,
+			},
+			Deactivate: &categoryUsecase.DefaultDeactivateCategoryUseCase{
 				Gateway: cGateway,
 			},
 		},

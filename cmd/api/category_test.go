@@ -27,11 +27,20 @@ func (m *CreateCategoryUseCaseMock) Execute(c cs.CreateCategoryCommand) (*notifi
 	return args.Get(0).(*notification.Notification), args.Get(1).(*cs.CreateCategoryOutput)
 }
 
-type DeleteCategoryUseCaseMock struct {
+type ActivateCategoryUseCaseMock struct {
 	mock.Mock
 }
 
-func (m *DeleteCategoryUseCaseMock) Execute(id int64) error {
+func (m *ActivateCategoryUseCaseMock) Execute(id int64) error {
+	args := m.Called(id)
+	return args.Error(0)
+}
+
+type DeactivateCategoryUseCaseMock struct {
+	mock.Mock
+}
+
+func (m *DeactivateCategoryUseCaseMock) Execute(id int64) error {
 	args := m.Called(id)
 	return args.Error(0)
 }
@@ -188,17 +197,42 @@ func TestGetCategoryByIdWhenIdIsInvalid(t *testing.T) {
 	getByIdUseCaseMock.AssertNumberOfCalls(t, "Execute", 0)
 }
 
-func TestDeleteCategory(t *testing.T) {
-	deleteCategoryUseCaseMock := new(DeleteCategoryUseCaseMock)
+func TestActivateCategory(t *testing.T) {
+	activateCategoryUseCaseMock := new(ActivateCategoryUseCaseMock)
 	app := &application{
 		useCases: usecase.UseCases{
 			Category: usecase.CategoryUseCase{
-				Delete: deleteCategoryUseCaseMock,
+				Activate: activateCategoryUseCaseMock,
 			},
 		},
 	}
 	id := int64(488)
-	req := httptest.NewRequest(http.MethodGet, "/v1/categories/{id}", nil)
+	req := httptest.NewRequest(http.MethodPost, "/v1/categories/{id}/activate", nil)
+	w := httptest.NewRecorder()
+	rctx := chi.NewRouteContext()
+	rctx.URLParams.Add("id", strconv.FormatInt(id, 10))
+	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+
+	activateCategoryUseCaseMock.On("Execute", id).Return(nil)
+
+	app.activateCategoryHandler(w, req)
+
+	assert.Equal(t, http.StatusNoContent, w.Code)
+	activateCategoryUseCaseMock.AssertExpectations(t)
+	activateCategoryUseCaseMock.AssertNumberOfCalls(t, "Execute", 1)
+}
+
+func TestDeactivateCategory(t *testing.T) {
+	deleteCategoryUseCaseMock := new(DeactivateCategoryUseCaseMock)
+	app := &application{
+		useCases: usecase.UseCases{
+			Category: usecase.CategoryUseCase{
+				Deactivate: deleteCategoryUseCaseMock,
+			},
+		},
+	}
+	id := int64(488)
+	req := httptest.NewRequest(http.MethodPost, "/v1/categories/{id}/deactivate", nil)
 	w := httptest.NewRecorder()
 	rctx := chi.NewRouteContext()
 	rctx.URLParams.Add("id", strconv.FormatInt(id, 10))
@@ -206,7 +240,7 @@ func TestDeleteCategory(t *testing.T) {
 
 	deleteCategoryUseCaseMock.On("Execute", id).Return(nil)
 
-	app.deleteCategoryHandler(w, req)
+	app.deactivateCategoryHandler(w, req)
 
 	assert.Equal(t, http.StatusNoContent, w.Code)
 	deleteCategoryUseCaseMock.AssertExpectations(t)
