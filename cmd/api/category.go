@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com.br/gibranct/admin-do-catalogo/internal/domain"
 	categoryUseCase "github.com.br/gibranct/admin-do-catalogo/internal/usecases/category"
 	"github.com/go-chi/chi/v5"
 )
@@ -108,4 +109,36 @@ func (app *application) activateCategoryHandler(w http.ResponseWriter, r *http.R
 	}
 
 	w.WriteHeader(http.StatusNoContent)
+}
+
+func (app *application) listCategoriesHandler(w http.ResponseWriter, r *http.Request) {
+	page, err := strconv.Atoi(r.URL.Query().Get("page"))
+
+	if err != nil {
+		app.badRequestResponse(w, err)
+		return
+	}
+
+	perPage, err := strconv.Atoi(r.URL.Query().Get("perPage"))
+
+	if err != nil {
+		app.badRequestResponse(w, err)
+	}
+
+	query := domain.SearchQuery{
+		Sort:      r.URL.Query().Get("sort"),
+		Term:      r.URL.Query().Get("search"),
+		Page:      page,
+		PerPage:   perPage,
+		Direction: r.URL.Query().Get("dir"),
+	}
+
+	output, err := app.useCases.Category.FindAll.Execute(query)
+
+	if err != nil {
+		app.serverErrorResponse(w)
+		return
+	}
+
+	app.writeJson(w, http.StatusOK, output, nil)
 }

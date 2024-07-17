@@ -10,6 +10,7 @@ import (
 	"strconv"
 	"testing"
 
+	"github.com.br/gibranct/admin-do-catalogo/internal/domain"
 	usecase "github.com.br/gibranct/admin-do-catalogo/internal/usecases"
 	cs "github.com.br/gibranct/admin-do-catalogo/internal/usecases/category"
 	"github.com.br/gibranct/admin-do-catalogo/pkg/notification"
@@ -53,6 +54,16 @@ func (m *GetCategoryByIdUseCaseMock) Execute(id int64) (*cs.CategoryOutput, erro
 	args := m.Called(id)
 	return args.Get(0).(*cs.CategoryOutput), args.Error(1)
 }
+
+type ListCategoriesUseCaseMock struct {
+	mock.Mock
+}
+
+func (m *ListCategoriesUseCaseMock) Execute(query domain.SearchQuery) (*domain.Pagination[cs.ListCategoriesOutput], error) {
+	args := m.Called(query)
+	return args.Get(0).(*domain.Pagination[cs.ListCategoriesOutput]), args.Error(1)
+}
+
 func TestCreateCategory(t *testing.T) {
 	createUseCaseMock := new(CreateCategoryUseCaseMock)
 	app := &application{
@@ -245,4 +256,78 @@ func TestDeactivateCategory(t *testing.T) {
 	assert.Equal(t, http.StatusNoContent, w.Code)
 	deleteCategoryUseCaseMock.AssertExpectations(t)
 	deleteCategoryUseCaseMock.AssertNumberOfCalls(t, "Execute", 1)
+}
+
+func TestListCategories(t *testing.T) {
+	listCategoriesUseCaseMock := new(ListCategoriesUseCaseMock)
+	app := &application{
+		useCases: usecase.UseCases{
+			Category: usecase.CategoryUseCase{
+				FindAll: listCategoriesUseCaseMock,
+			},
+		},
+	}
+	search := ""
+	page := 0
+	perPage := 10
+	sort := "name"
+	direction := "ASC"
+	req := httptest.NewRequest(http.MethodGet, "/v1/categories", nil)
+	query := req.URL.Query()
+	query.Add("search", search)
+	query.Add("page", strconv.Itoa(page))
+	query.Add("perPage", strconv.Itoa(perPage))
+	query.Add("sort", sort)
+	query.Add("dir", direction)
+	req.URL.RawQuery = query.Encode()
+	output := []*cs.ListCategoriesOutput{
+		{
+			ID:          1,
+			Name:        "name1",
+			Description: "desc1",
+		},
+		{
+			ID:          2,
+			Name:        "name2",
+			Description: "desc2",
+		},
+	}
+	pageCategories := domain.Pagination[cs.ListCategoriesOutput]{
+		CurrentPage: page,
+		PerPage:     perPage,
+		Items:       output,
+		Total:       perPage,
+	}
+	var body struct {
+		CurrentPage int                       `json:"currentPage"`
+		PerPage     int                       `json:"perPage"`
+		Total       int                       `json:"total"`
+		Items       []cs.ListCategoriesOutput `json:"items"`
+	}
+
+	w := httptest.NewRecorder()
+
+	listCategoriesUseCaseMock.On("Execute", domain.SearchQuery{
+		Term:      search,
+		Page:      page,
+		PerPage:   perPage,
+		Sort:      sort,
+		Direction: direction,
+	}).Return(&pageCategories, nil)
+
+	app.listCategoriesHandler(w, req)
+	err := json.NewDecoder(w.Body).Decode(&body)
+
+	assert.Nil(t, err)
+	assert.Equal(t, page, body.CurrentPage)
+	assert.Equal(t, perPage, body.PerPage)
+	assert.Equal(t, perPage, body.Total)
+	assert.Equal(t, http.StatusOK, w.Code)
+	listCategoriesUseCaseMock.AssertExpectations(t)
+	listCategoriesUseCaseMock.AssertNumberOfCalls(t, "Execute", 1)
+	for idx, item := range body.Items {
+		assert.Equal(t, output[idx].ID, item.ID)
+		assert.Equal(t, output[idx].Name, item.Name)
+		assert.Equal(t, output[idx].Description, item.Description)
+	}
 }

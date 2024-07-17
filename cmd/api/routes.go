@@ -14,6 +14,7 @@ func (app *application) routes() http.Handler {
 
 	router.Route("/v1", func(r chi.Router) {
 		r.Post("/categories", app.createCategoryHandler)
+		r.Get("/categories", app.listCategoriesHandler)
 		r.Get("/categories/{id}", app.getCategoryByIdHandler)
 		r.Post("/categories/{id}/activate", app.activateCategoryHandler)
 		r.Post("/categories/{id}/deactivate", app.deactivateCategoryHandler)

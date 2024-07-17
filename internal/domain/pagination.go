@@ -13,10 +13,10 @@ type SearchQuery struct {
 }
 
 type Pagination[T any] struct {
-	CurrentPage int
-	PerPage     int
-	Total       int
-	Items       []*T
+	CurrentPage int  `json:"currentPage`
+	PerPage     int  `json:"perPage"`
+	Total       int  `json:"total"`
+	Items       []*T `json:"items"`
 }
 
 func (sq SearchQuery) SortDirection() string {
