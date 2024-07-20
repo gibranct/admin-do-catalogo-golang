@@ -35,7 +35,7 @@ func (app *application) createCategoryHandler(w http.ResponseWriter, r *http.Req
 	}
 	err = app.writeError(w, http.StatusBadRequest, "Could not save category", noti)
 	if err != nil {
-		app.serverErrorResponse(w)
+		app.serverErrorResponse(w, err)
 	}
 }
 
@@ -61,7 +61,7 @@ func (app *application) getCategoryByIdHandler(w http.ResponseWriter, r *http.Re
 
 	err = app.writeJson(w, http.StatusOK, out, nil)
 	if err != nil {
-		app.serverErrorResponse(w)
+		app.serverErrorResponse(w, err)
 	}
 }
 
@@ -136,7 +136,7 @@ func (app *application) listCategoriesHandler(w http.ResponseWriter, r *http.Req
 	output, err := app.useCases.Category.FindAll.Execute(query)
 
 	if err != nil {
-		app.serverErrorResponse(w)
+		app.serverErrorResponse(w, err)
 		return
 	}
 

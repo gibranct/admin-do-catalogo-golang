@@ -45,7 +45,8 @@ func (app *application) writeJson(w http.ResponseWriter, status int, data any, h
 	return nil
 }
 
-func (app *application) serverErrorResponse(w http.ResponseWriter) {
+func (app *application) serverErrorResponse(w http.ResponseWriter, err error) {
+	app.logger.Error(err.Error())
 	message := "the server encountered a problem and could not process your request"
 	app.writeError(w, http.StatusInternalServerError, message, nil)
 }

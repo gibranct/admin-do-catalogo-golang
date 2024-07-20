@@ -3,6 +3,7 @@ package gateway
 import (
 	"database/sql"
 	"fmt"
+	"math"
 	"strconv"
 	"strings"
 
@@ -113,13 +114,14 @@ func (cg *CategoryGateway) FindAll(query domain.SearchQuery) (*domain.Pagination
 		return nil, err
 	}
 
+	lastPage := math.Ceil(float64(totalRecords) / float64(query.PerPage))
 	return &domain.Pagination[category.Category]{
 		Items:       categories,
 		PerPage:     query.PerPage,
 		CurrentPage: query.Page,
 		Total:       totalRecords,
+		IsLast:      lastPage == float64(query.Page),
 	}, nil
-
 }
 
 func (cg *CategoryGateway) ExistsByIds(categoryIds []int64) ([]int64, error) {

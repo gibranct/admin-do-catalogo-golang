@@ -47,3 +47,84 @@ func TestFindAllCategories(t *testing.T) {
 		assert.Equal(t, categories[idx].Description, item.Description)
 	}
 }
+
+func TestFindAllCategoriesWhenPageIsInvalid(t *testing.T) {
+	gatewayMock := new(mocks.CategoryGatewayMock)
+	sut := DefaultListCategoriesUseCase{
+		Gateway: gatewayMock,
+	}
+	tests := []struct {
+		expectedMsg string
+		query       domain.SearchQuery
+	}{
+		{
+			expectedMsg: "invalid page",
+			query: domain.SearchQuery{
+				Page:      -1,
+				PerPage:   1,
+				Term:      "aa",
+				Sort:      "name",
+				Direction: "ASC",
+			},
+		},
+		{
+			expectedMsg: "invalid page",
+			query: domain.SearchQuery{
+				Page:      0,
+				PerPage:   1,
+				Term:      "aa",
+				Sort:      "name",
+				Direction: "ASC",
+			},
+		},
+		{
+			expectedMsg: "perPage should be greater than zero",
+			query: domain.SearchQuery{
+				Page:      1,
+				PerPage:   0,
+				Term:      "aa",
+				Sort:      "name",
+				Direction: "ASC",
+			},
+		},
+		{
+			expectedMsg: "perPage should be greater than zero",
+			query: domain.SearchQuery{
+				Page:      1,
+				PerPage:   -1,
+				Term:      "aa",
+				Sort:      "name",
+				Direction: "ASC",
+			},
+		},
+		{
+			expectedMsg: "can only sort by 'name' and 'description'",
+			query: domain.SearchQuery{
+				Page:      1,
+				PerPage:   10,
+				Term:      "aa",
+				Sort:      "nae",
+				Direction: "ASC",
+			},
+		},
+		{
+			expectedMsg: "invalid direction",
+			query: domain.SearchQuery{
+				Page:      1,
+				PerPage:   10,
+				Term:      "aa",
+				Sort:      "name",
+				Direction: "AC",
+			},
+		},
+	}
+
+	for _, data := range tests {
+		page, err := sut.Execute(data.query)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, data.expectedMsg, err.Error())
+		assert.Nil(t, page)
+	}
+
+}

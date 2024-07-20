@@ -5,8 +5,11 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
+	"log/slog"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"strconv"
 	"testing"
 
@@ -330,4 +333,35 @@ func TestListCategories(t *testing.T) {
 		assert.Equal(t, output[idx].Name, item.Name)
 		assert.Equal(t, output[idx].Description, item.Description)
 	}
+}
+
+func runTestServer() *httptest.Server {
+	var cfg config = config{
+		port: 4000,
+		env:  "test",
+	}
+	app := &application{
+		logger:   slog.New(slog.NewTextHandler(os.Stdout, nil)),
+		useCases: usecase.NewUseCases(nil),
+		config:   cfg,
+	}
+	return httptest.NewServer(app.routes())
+}
+
+func TestCreateCategory2(t *testing.T) {
+	ts := runTestServer()
+	defer ts.Close()
+
+	t.Run("should 201 when creation is success", func(t *testing.T) {
+		data, _ := json.Marshal(map[string]any{
+			"name":        "Test",
+			"description": "test description",
+		})
+		_, err := http.Post(
+			fmt.Sprintf("%s/v1/categories", ts.URL),
+			"application/json",
+			bytes.NewBuffer(data),
+		)
+		assert.Nil(t, err)
+	})
 }

@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-func (app *application) server() error {
+func (app *application) server() *http.Server {
 	srv := &http.Server{
 		Addr:         fmt.Sprintf(":%d", app.config.port),
 		Handler:      app.routes(),
@@ -26,5 +26,5 @@ func (app *application) server() error {
 		log.Fatalf("Could not start server: %s", err.Error())
 	}
 
-	return nil
+	return srv
 }

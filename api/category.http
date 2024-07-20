@@ -20,3 +20,7 @@ Host: localhost:4000
 ###
 POST http://localhost:4000/v1/categories/1/deactivate HTTP/1.1
 Host: localhost:4000
+
+###
+GET http://localhost:4000/v1/categories?page=1&perPage=4&sort=name&dir=ASC HTTP/1.1
+Host: localhost:4000

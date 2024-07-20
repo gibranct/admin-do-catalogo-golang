@@ -60,11 +60,7 @@ func main() {
 		useCases: usecase.NewUseCases(db),
 	}
 
-	err = app.server()
-	if err != nil {
-		logger.Error(err.Error())
-		os.Exit(1)
-	}
+	app.server()
 }
 
 func OpenDB(cfg config) (*sql.DB, error) {

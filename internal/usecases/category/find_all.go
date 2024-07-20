@@ -6,9 +6,9 @@ import (
 )
 
 type ListCategoriesOutput struct {
-	ID          int64
-	Name        string
-	Description string
+	ID          int64  `json:"id"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
 }
 
 type ListCategoriesUseCase interface {
@@ -20,6 +20,10 @@ type DefaultListCategoriesUseCase struct {
 }
 
 func (useCase *DefaultListCategoriesUseCase) Execute(query domain.SearchQuery) (*domain.Pagination[ListCategoriesOutput], error) {
+	if err := query.Validate(); err != nil {
+		return nil, err
+	}
+
 	page, err := useCase.Gateway.FindAll(query)
 
 	if err != nil {

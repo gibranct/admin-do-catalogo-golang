@@ -1,6 +1,8 @@
 package domain
 
 import (
+	"errors"
+	"slices"
 	"strings"
 )
 
@@ -13,17 +15,20 @@ type SearchQuery struct {
 }
 
 type Pagination[T any] struct {
-	CurrentPage int  `json:"currentPage`
+	CurrentPage int  `json:"currentPage"`
 	PerPage     int  `json:"perPage"`
 	Total       int  `json:"total"`
+	IsLast      bool `json:"isLast"`
 	Items       []*T `json:"items"`
 }
 
+var safeValues = []string{"name", "description"}
+
 func (sq SearchQuery) SortDirection() string {
-	if sq.Sort == "DESC" || sq.Sort == "ASC" {
-		return sq.Sort
+	if sq.Direction == "" {
+		return "ASC"
 	}
-	return "ASC"
+	return sq.Direction
 }
 
 func (sq SearchQuery) Limit() int {
@@ -35,10 +40,26 @@ func (sq SearchQuery) Offset() int {
 }
 
 func (sq SearchQuery) SortColumn() string {
-	for _, safeValue := range []string{"name", "description"} {
-		if sq.Sort == safeValue {
-			return strings.Trim(sq.Sort, " ")
-		}
+	if sq.Sort == "" {
+		return "name"
 	}
-	panic("unsafe sort parameter " + sq.Sort)
+	return sq.Sort
+}
+
+func (sq *SearchQuery) Validate() error {
+	if sq.Page < 1 {
+		return errors.New("invalid page")
+	}
+	if sq.PerPage < 1 {
+		return errors.New("perPage should be greater than zero")
+	}
+
+	if sq.Sort != "" && !slices.Contains(safeValues, sq.Sort) {
+		return errors.New("can only sort by 'name' and 'description'")
+	}
+	if sq.Direction != "" && !slices.Contains([]string{"ASC", "DESC"}, strings.ToUpper(sq.Direction)) {
+		return errors.New("invalid direction")
+	}
+
+	return nil
 }
