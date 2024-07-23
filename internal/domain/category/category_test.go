@@ -50,6 +50,7 @@ func TestCategoryActivate(t *testing.T) {
 	updatedAt := c.UpdatedAt
 
 	c.Deactivate()
+	time.Sleep(1 * time.Millisecond)
 	c.Activate()
 
 	assert.True(t, c.IsActive)

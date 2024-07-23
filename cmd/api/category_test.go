@@ -169,7 +169,7 @@ func TestDeactivateCategory(t *testing.T) {
 	ts, app := runTestServer()
 	defer ts.Close()
 
-	t.Run("should return 204 when category is deleted", func(t *testing.T) {
+	t.Run("should return 204 when category is deactivated", func(t *testing.T) {
 		command := category_usecase.CreateCategoryCommand{
 			Name:        "test 1",
 			Description: "desc fake",
@@ -180,7 +180,10 @@ func TestDeactivateCategory(t *testing.T) {
 			"application/json",
 			nil,
 		)
+		assert.Nil(t, err)
+		out, err := app.useCases.Category.FindOne.Execute(output.ID)
 
+		assert.False(t, out.IsActive)
 		assert.Nil(t, err)
 		assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 	})
@@ -191,18 +194,30 @@ func TestActivateCategory(t *testing.T) {
 	ts, app := runTestServer()
 	defer ts.Close()
 
-	t.Run("should return 204 when category is deleted", func(t *testing.T) {
+	t.Run("should return 204 when category is activated", func(t *testing.T) {
 		command := category_usecase.CreateCategoryCommand{
 			Name:        "test 1",
 			Description: "desc fake",
 		}
 		_, output := app.useCases.Category.Create.Execute(command)
+		_, err := http.Post(
+			fmt.Sprintf("%s/v1/categories/%d/deactivate", ts.URL, output.ID),
+			"application/json",
+			nil,
+		)
+		assert.Nil(t, err)
+		out, err := app.useCases.Category.FindOne.Execute(output.ID)
+		assert.Nil(t, err)
+		assert.False(t, out.IsActive)
 		resp, err := http.Post(
 			fmt.Sprintf("%s/v1/categories/%d/activate", ts.URL, output.ID),
 			"application/json",
 			nil,
 		)
-
+		assert.Nil(t, err)
+		outActive, err := app.useCases.Category.FindOne.Execute(out.ID)
+		assert.Nil(t, err)
+		assert.True(t, outActive.IsActive)
 		assert.Nil(t, err)
 		assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 	})

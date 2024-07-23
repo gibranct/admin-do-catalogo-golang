@@ -13,6 +13,7 @@ type CategoryUseCase struct {
 	Activate   categoryUsecase.ActivateCategoryUseCase
 	Deactivate categoryUsecase.DeactivateCategoryUseCase
 	FindAll    categoryUsecase.ListCategoriesUseCase
+	Update     categoryUsecase.UpdateCategoryUseCase
 }
 type UseCases struct {
 	Category CategoryUseCase
@@ -35,6 +36,9 @@ func NewUseCases(db *sql.DB) UseCases {
 				Gateway: cGateway,
 			},
 			FindAll: &categoryUsecase.DefaultListCategoriesUseCase{
+				Gateway: cGateway,
+			},
+			Update: &categoryUsecase.DefaultUpdateCategoryUseCase{
 				Gateway: cGateway,
 			},
 		},

@@ -142,3 +142,34 @@ func (app *application) listCategoriesHandler(w http.ResponseWriter, r *http.Req
 
 	app.writeJson(w, http.StatusOK, output, nil)
 }
+
+func (app *application) updateCategoryHandler(w http.ResponseWriter, r *http.Request) {
+	var input struct {
+		ID          int64  `json:"id"`
+		Name        string `json:"name"`
+		Description string `json:"description"`
+	}
+	err := app.readJSON(w, r, &input)
+
+	if err != nil {
+		app.badRequestResponse(w, errors.New("invalid id"))
+		return
+	}
+	command := categoryUseCase.UpdateCategoryCommand{
+		ID:          input.ID,
+		Name:        input.Name,
+		Description: input.Description,
+	}
+
+	noti := app.useCases.Category.Update.Execute(command)
+
+	if !noti.HasErrors() {
+		app.writeJson(w, http.StatusOK, envelope{"id": input.ID}, nil)
+		return
+	}
+
+	err = app.writeError(w, http.StatusBadRequest, "Could not update category", noti)
+	if err != nil {
+		app.serverErrorResponse(w, err)
+	}
+}
