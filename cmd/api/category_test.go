@@ -222,3 +222,120 @@ func TestActivateCategory(t *testing.T) {
 		assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 	})
 }
+
+func TestFindAllCategories(t *testing.T) {
+	t.Cleanup(cleanUp)
+	ts, app := runTestServer()
+	defer ts.Close()
+	command1 := category_usecase.CreateCategoryCommand{
+		Name:        "test 1 b",
+		Description: "desc fake a",
+	}
+	command2 := category_usecase.CreateCategoryCommand{
+		Name:        "test 1 a",
+		Description: "desc fake b",
+	}
+	_, cate1 := app.useCases.Category.Create.Execute(command1)
+	_, cate2 := app.useCases.Category.Create.Execute(command2)
+
+	t.Run("should return 200 when find all categories without filter sorted by name ASC", func(t *testing.T) {
+		page := 1
+		perPage := 2
+		total := 2
+		isLast := true
+		sort := "name"
+		dir := "ASC"
+		resp, err := http.Get(
+			fmt.Sprintf("%s/v1/categories?page=%d&perPage=%d&sort=%s&dir=%s", ts.URL, page, perPage, sort, dir),
+		)
+		expecBody := fmt.Sprintf(
+			`{"currentPage":%d,"perPage":%d,"total":%d,"isLast":%t,"items":[{"id":%d,"name":"%s","description":"%s"},{"id":%d,"name":"%s","description":"%s"}]}`,
+			page, perPage, total, isLast, cate2.ID, command2.Name, command2.Description, cate1.ID, command1.Name, command1.Description,
+		)
+		body := test.ReadRespBody(*resp)
+
+		assert.Nil(t, err)
+		assert.Equal(t, http.StatusOK, resp.StatusCode)
+		assert.Equal(t, expecBody, body)
+	})
+
+	t.Run("should return 200 when find all categories without filter sorted by name DESC", func(t *testing.T) {
+		page := 1
+		perPage := 2
+		total := 2
+		isLast := true
+		sort := "name"
+		dir := "DESC"
+		resp, err := http.Get(
+			fmt.Sprintf("%s/v1/categories?page=%d&perPage=%d&sort=%s&dir=%s", ts.URL, page, perPage, sort, dir),
+		)
+		expecBody := fmt.Sprintf(
+			`{"currentPage":%d,"perPage":%d,"total":%d,"isLast":%t,"items":[{"id":%d,"name":"%s","description":"%s"},{"id":%d,"name":"%s","description":"%s"}]}`,
+			page, perPage, total, isLast, cate1.ID, command1.Name, command1.Description, cate2.ID, command2.Name, command2.Description,
+		)
+		body := test.ReadRespBody(*resp)
+
+		assert.Nil(t, err)
+		assert.Equal(t, http.StatusOK, resp.StatusCode)
+		assert.Equal(t, expecBody, body)
+	})
+
+	t.Run("should return 200 when find all categories without filter sorted by description DESC", func(t *testing.T) {
+		page := 1
+		perPage := 2
+		total := 2
+		isLast := true
+		sort := "description"
+		dir := "DESC"
+		resp, err := http.Get(
+			fmt.Sprintf("%s/v1/categories?page=%d&perPage=%d&sort=%s&dir=%s", ts.URL, page, perPage, sort, dir),
+		)
+		expecBody := fmt.Sprintf(
+			`{"currentPage":%d,"perPage":%d,"total":%d,"isLast":%t,"items":[{"id":%d,"name":"%s","description":"%s"},{"id":%d,"name":"%s","description":"%s"}]}`,
+			page, perPage, total, isLast, cate2.ID, command2.Name, command2.Description, cate1.ID, command1.Name, command1.Description,
+		)
+		body := test.ReadRespBody(*resp)
+
+		assert.Nil(t, err)
+		assert.Equal(t, http.StatusOK, resp.StatusCode)
+		assert.Equal(t, expecBody, body)
+	})
+
+	t.Run("should return 200 when find categories fist page without filter", func(t *testing.T) {
+		page := 1
+		perPage := 1
+		total := 2
+		isLast := false
+		resp, err := http.Get(
+			fmt.Sprintf("%s/v1/categories?page=%d&perPage=%d", ts.URL, page, perPage),
+		)
+		expecBody := fmt.Sprintf(
+			`{"currentPage":%d,"perPage":%d,"total":%d,"isLast":%t,"items":[{"id":%d,"name":"%s","description":"%s"}]}`,
+			page, perPage, total, isLast, cate2.ID, command2.Name, command2.Description,
+		)
+		body := test.ReadRespBody(*resp)
+
+		assert.Nil(t, err)
+		assert.Equal(t, http.StatusOK, resp.StatusCode)
+		assert.Equal(t, expecBody, body)
+	})
+
+	t.Run("should return 200 when find categories second page without filter", func(t *testing.T) {
+		page := 2
+		perPage := 1
+		total := 2
+		isLast := true
+		resp, err := http.Get(
+			fmt.Sprintf("%s/v1/categories?page=%d&perPage=%d", ts.URL, page, perPage),
+		)
+		expecBody := fmt.Sprintf(
+			`{"currentPage":%d,"perPage":%d,"total":%d,"isLast":%t,"items":[{"id":%d,"name":"%s","description":"%s"}]}`,
+			page, perPage, total, isLast, cate1.ID, command1.Name, command1.Description,
+		)
+		body := test.ReadRespBody(*resp)
+
+		assert.Nil(t, err)
+		assert.Equal(t, http.StatusOK, resp.StatusCode)
+		assert.Equal(t, expecBody, body)
+	})
+}

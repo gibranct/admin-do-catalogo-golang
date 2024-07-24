@@ -74,7 +74,7 @@ func (cg *CategoryGateway) FindAll(query domain.SearchQuery) (*domain.Pagination
 		SELECT COUNT(*) OVER(), id, name, description, is_active, created_at, updated_at, deleted_at
 		FROM categories
 		WHERE name ILIKE $1 OR description ILIKE $1
-		ORDER BY %s, id %s 
+		ORDER BY %s %s, id 
 		LIMIT $2 OFFSET $3`,
 		query.SortColumn(), query.SortDirection())
 

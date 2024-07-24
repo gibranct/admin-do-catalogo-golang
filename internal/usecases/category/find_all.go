@@ -47,6 +47,7 @@ func (useCase *DefaultListCategoriesUseCase) Execute(query domain.SearchQuery) (
 		CurrentPage: page.CurrentPage,
 		PerPage:     page.PerPage,
 		Total:       page.Total,
+		IsLast:      page.IsLast,
 	}, nil
 
 }
