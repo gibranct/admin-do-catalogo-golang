@@ -339,3 +339,70 @@ func TestFindAllCategories(t *testing.T) {
 		assert.Equal(t, expecBody, body)
 	})
 }
+
+func TestUpdateCategory(t *testing.T) {
+	t.Cleanup(cleanUp)
+	ts, app := runTestServer()
+	defer ts.Close()
+
+	t.Run("should return 200 when category is updated", func(t *testing.T) {
+		command := category_usecase.CreateCategoryCommand{
+			Name:        "test 1",
+			Description: "desc fake",
+		}
+		_, output := app.useCases.Category.Create.Execute(command)
+		newName := "new name"
+		newDesc := "new description"
+		data, _ := json.Marshal(map[string]any{
+			"name":        newName,
+			"description": newDesc,
+		})
+		req, err := http.NewRequest("PUT",
+			fmt.Sprintf("%s/v1/categories/%d", ts.URL, output.ID),
+			bytes.NewBuffer(data),
+		)
+		resp, _ := http.DefaultClient.Do(req)
+		expecBody := fmt.Sprintf(`{"id":%d}`, output.ID)
+		body := test.ReadRespBody(*resp)
+
+		c, _ := app.useCases.Category.FindOne.Execute(output.ID)
+
+		assert.Nil(t, err)
+		assert.Equal(t, http.StatusOK, resp.StatusCode)
+		assert.Equal(t, expecBody, body)
+		assert.Equal(t, newName, c.Name)
+		assert.Equal(t, newDesc, c.Description)
+		assert.Equal(t, output.ID, c.ID)
+		assert.True(t, c.IsActive)
+	})
+
+	t.Run("should return 400 when category id is invalid", func(t *testing.T) {
+		data, _ := json.Marshal(map[string]any{
+			"name":        "new name",
+			"description": "new description",
+		})
+		req, err := http.NewRequest("PUT",
+			fmt.Sprintf("%s/v1/categories/%s", ts.URL, "9a"),
+			bytes.NewBuffer(data),
+		)
+		resp, _ := http.DefaultClient.Do(req)
+
+		assert.Nil(t, err)
+		assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
+	})
+
+	t.Run("should return 404 when category id is less than one", func(t *testing.T) {
+		data, _ := json.Marshal(map[string]any{
+			"name":        "new name",
+			"description": "new description",
+		})
+		req, err := http.NewRequest("PUT",
+			fmt.Sprintf("%s/v1/categories/%d", ts.URL, 0),
+			bytes.NewBuffer(data),
+		)
+		resp, _ := http.DefaultClient.Do(req)
+
+		assert.Nil(t, err)
+		assert.Equal(t, http.StatusNotFound, resp.StatusCode)
+	})
+}

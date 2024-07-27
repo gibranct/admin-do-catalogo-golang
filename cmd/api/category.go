@@ -144,27 +144,36 @@ func (app *application) listCategoriesHandler(w http.ResponseWriter, r *http.Req
 }
 
 func (app *application) updateCategoryHandler(w http.ResponseWriter, r *http.Request) {
+	categoryIdStr := chi.URLParam(r, "id")
+	categoryId, err := strconv.ParseInt(categoryIdStr, 10, 64)
+	if err != nil {
+		app.badRequestResponse(w, errors.New("invalid id"))
+		return
+	}
+	if categoryId <= 0 {
+		app.notFoundResponse(w)
+		return
+	}
 	var input struct {
-		ID          int64  `json:"id"`
 		Name        string `json:"name"`
 		Description string `json:"description"`
 	}
-	err := app.readJSON(w, r, &input)
+	err = app.readJSON(w, r, &input)
 
 	if err != nil {
 		app.badRequestResponse(w, errors.New("invalid id"))
 		return
 	}
 	command := categoryUseCase.UpdateCategoryCommand{
-		ID:          input.ID,
+		ID:          categoryId,
 		Name:        input.Name,
 		Description: input.Description,
 	}
 
 	noti := app.useCases.Category.Update.Execute(command)
 
-	if !noti.HasErrors() {
-		app.writeJson(w, http.StatusOK, envelope{"id": input.ID}, nil)
+	if noti == nil || !noti.HasErrors() {
+		app.writeJson(w, http.StatusOK, envelope{"id": categoryId}, nil)
 		return
 	}
 
