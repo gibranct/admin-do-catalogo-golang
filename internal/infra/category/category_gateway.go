@@ -1,4 +1,4 @@
-package gateway
+package infra_category
 
 import (
 	"database/sql"

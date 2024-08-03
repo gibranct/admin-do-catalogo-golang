@@ -1,4 +1,4 @@
-package infra_category
+package infra_castmember
 
 import (
 	"errors"
@@ -6,47 +6,47 @@ import (
 	"testing"
 
 	"github.com.br/gibranct/admin-do-catalogo/internal/domain"
-	"github.com.br/gibranct/admin-do-catalogo/internal/domain/category"
+	"github.com.br/gibranct/admin-do-catalogo/internal/domain/castmember"
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/stretchr/testify/assert"
 
 	_ "github.com/lib/pq"
 )
 
-func TestCreateCategory(t *testing.T) {
+func TestCreateCastMember(t *testing.T) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
 		log.Fatalf("Failed to create DB connection: %s", err)
 	}
 	defer db.Close()
-	cg := NewCategoryGateway(db)
-	c := category.NewCategory("drinks", "drinks desc")
-	query := "INSERT INTO categories"
+	cg := NewCastMemberGateway(db)
+	c := castmember.NewCastMember("John Doe", castmember.ACTOR)
+	query := "INSERT INTO cast_members"
 	mock.ExpectQuery(query).WithArgs(
-		c.Name, c.Description, c.IsActive, c.CreatedAt, c.UpdatedAt,
+		c.Name, c.Type.String(), c.CreatedAt, c.UpdatedAt,
 	).WillReturnRows(sqlmock.NewRows([]string{"1"}).AddRow(1))
 
 	err = cg.Create(c)
 	if err != nil {
-		log.Fatalf("Could not save category: %s", err)
+		log.Fatalf("Could not save cast member: %s", err)
 	}
 	assert.Nil(t, err)
 	err = mock.ExpectationsWereMet()
 	assert.Nil(t, err)
 }
 
-func TestCreateCategoryWhenFails(t *testing.T) {
+func TestCreateCastMemberWhenFails(t *testing.T) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
 		log.Fatalf("Failed to create DB connection: %s", err)
 	}
 	defer db.Close()
-	cg := NewCategoryGateway(db)
-	c := category.NewCategory("drinks", "drinks desc")
-	query := "INSERT INTO categories"
-	expectedError := errors.New("failed to create category")
+	cg := NewCastMemberGateway(db)
+	c := castmember.NewCastMember("John Doe", castmember.DIRECTOR)
+	query := "INSERT INTO cast_members"
+	expectedError := errors.New("failed to create cast member")
 	mock.ExpectQuery(query).WithArgs(
-		c.Name, c.Description, c.IsActive, c.CreatedAt, c.UpdatedAt,
+		c.Name, c.Type.String(), c.CreatedAt, c.UpdatedAt,
 	).WillReturnError(expectedError)
 
 	err = cg.Create(c)
@@ -62,27 +62,24 @@ func TestFindById(t *testing.T) {
 		log.Fatalf("Failed to create DB connection: %s", err)
 	}
 	defer db.Close()
-	cg := NewCategoryGateway(db)
-	category := category.NewCategory("drinks", "drinks desc")
-	category.ID = 45
-	rows := sqlmock.NewRows([]string{"1", "2", "3", "4", "5", "6", "7"})
+	cg := NewCastMemberGateway(db)
+	c := castmember.NewCastMember("John Doe", castmember.DIRECTOR)
+	c.ID = 45
+	rows := sqlmock.NewRows([]string{"1", "2", "3", "4", "5"})
 	rows.AddRow(
-		category.ID,
-		category.Name,
-		category.Description,
-		category.IsActive,
-		category.CreatedAt,
-		category.UpdatedAt,
-		category.DeletedAt,
+		c.ID,
+		c.Name,
+		c.Type.String(),
+		c.CreatedAt,
+		c.UpdatedAt,
 	)
-	mock.ExpectQuery("SELECT").WithArgs(category.ID).WillReturnRows(rows)
+	mock.ExpectQuery("SELECT").WithArgs(c.ID).WillReturnRows(rows)
 
-	categoryFound, err := cg.FindById(category.ID)
+	castMemberFound, err := cg.FindById(c.ID)
 	assert.Nil(t, err)
-	assert.Equal(t, category.ID, categoryFound.ID)
-	assert.Equal(t, category.Name, categoryFound.Name)
-	assert.Equal(t, category.Description, categoryFound.Description)
-	assert.Equal(t, category.IsActive, categoryFound.IsActive)
+	assert.Equal(t, c.ID, castMemberFound.ID)
+	assert.Equal(t, c.Name, castMemberFound.Name)
+	assert.Equal(t, c.Type.String(), castMemberFound.Type.String())
 	err = mock.ExpectationsWereMet()
 	assert.Nil(t, err)
 }
@@ -93,14 +90,14 @@ func TestFindByIdWhenFails(t *testing.T) {
 		log.Fatalf("Failed to create DB connection: %s", err)
 	}
 	defer db.Close()
-	cg := NewCategoryGateway(db)
-	category := category.NewCategory("drinks", "drinks desc")
-	category.ID = 45
-	expectedError := errors.New("faild to find category")
-	mock.ExpectQuery("SELECT").WithArgs(category.ID).WillReturnError(expectedError)
+	cg := NewCastMemberGateway(db)
+	castMember := castmember.NewCastMember("John Doe", castmember.DIRECTOR)
+	castMember.ID = 45
+	expectedError := errors.New("faild to find cast member")
+	mock.ExpectQuery("SELECT").WithArgs(castMember.ID).WillReturnError(expectedError)
 
-	categoryFound, err := cg.FindById(category.ID)
-	assert.Nil(t, categoryFound)
+	castMemberFound, err := cg.FindById(castMember.ID)
+	assert.Nil(t, castMemberFound)
 	assert.NotNil(t, err)
 	assert.Equal(t, expectedError, err)
 	err = mock.ExpectationsWereMet()
@@ -113,10 +110,10 @@ func TestUpdate(t *testing.T) {
 		log.Fatalf("Failed to create DB connection: %s", err)
 	}
 	defer db.Close()
-	cg := NewCategoryGateway(db)
-	c := category.NewCategory("drinks", "drinks desc")
-	mock.ExpectExec("UPDATE categories").
-		WithArgs(c.Name, c.Description, c.IsActive, c.UpdatedAt, c.DeletedAt, c.ID).
+	cg := NewCastMemberGateway(db)
+	c := castmember.NewCastMember("John Doe", castmember.ACTOR)
+	mock.ExpectExec("UPDATE cast_members").
+		WithArgs(c.Name, c.Type.String(), c.UpdatedAt, c.ID).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 
 	err = cg.Update(*c)
@@ -132,11 +129,11 @@ func TestUpdateWhenFails(t *testing.T) {
 		log.Fatalf("Failed to create DB connection: %s", err)
 	}
 	defer db.Close()
-	cg := NewCategoryGateway(db)
-	c := category.NewCategory("drinks", "drinks desc")
+	cg := NewCastMemberGateway(db)
+	c := castmember.NewCastMember("John Doe", castmember.ACTOR)
 	expectedError := errors.New("failed to update category")
-	mock.ExpectExec("UPDATE categories").
-		WithArgs(c.Name, c.Description, c.IsActive, c.UpdatedAt, c.DeletedAt, c.ID).
+	mock.ExpectExec("UPDATE cast_members").
+		WithArgs(c.Name, c.Type.String(), c.UpdatedAt, c.ID).
 		WillReturnError(expectedError)
 
 	err = cg.Update(*c)
@@ -154,9 +151,9 @@ func TestFindAllWithFilters(t *testing.T) {
 	}
 	defer db.Close()
 	totalRecords := 3
-	category1 := category.NewCategory("movie", "drinks desc")
-	category2 := category.NewCategory("tv show", "drinks desc")
-	category3 := category.NewCategory("documentary", "drinks desc")
+	castMember1 := castmember.NewCastMember("John Doe 1", castmember.ACTOR)
+	castMember2 := castmember.NewCastMember("John Doe 2", castmember.ACTOR)
+	castMember3 := castmember.NewCastMember("John Doe 3", castmember.ACTOR)
 	test := struct {
 		query         domain.SearchQuery
 		expectedQuery domain.SearchQuery
@@ -178,37 +175,31 @@ func TestFindAllWithFilters(t *testing.T) {
 		},
 		isLast: false,
 	}
-	cg := NewCategoryGateway(db)
-	rows := sqlmock.NewRows([]string{"1", "2", "3", "4", "5", "6", "7", "8"})
+	cg := NewCastMemberGateway(db)
+	rows := sqlmock.NewRows([]string{"1", "2", "3", "4", "5", "6"})
 	rows.AddRow(
 		totalRecords,
-		category1.ID,
-		category1.Name,
-		category1.Description,
-		category1.IsActive,
-		category1.CreatedAt,
-		category1.UpdatedAt,
-		category1.DeletedAt,
+		castMember1.ID,
+		castMember1.Name,
+		castMember1.Type.String(),
+		castMember1.CreatedAt,
+		castMember1.UpdatedAt,
 	)
 	rows.AddRow(
 		totalRecords,
-		category2.ID,
-		category2.Name,
-		category2.Description,
-		category2.IsActive,
-		category2.CreatedAt,
-		category2.UpdatedAt,
-		category2.DeletedAt,
+		castMember2.ID,
+		castMember2.Name,
+		castMember2.Type.String(),
+		castMember2.CreatedAt,
+		castMember2.UpdatedAt,
 	)
 	rows.AddRow(
 		totalRecords,
-		category3.ID,
-		category3.Name,
-		category3.Description,
-		category3.IsActive,
-		category3.CreatedAt,
-		category3.UpdatedAt,
-		category3.DeletedAt,
+		castMember3.ID,
+		castMember3.Name,
+		castMember3.Type.String(),
+		castMember3.CreatedAt,
+		castMember3.UpdatedAt,
 	)
 	mock.ExpectQuery("SELECT").WithArgs(
 		"%"+test.expectedQuery.Term+"%", test.expectedQuery.Limit(), test.expectedQuery.Offset(),
@@ -232,9 +223,9 @@ func TestFindAllWhenIsLastPage(t *testing.T) {
 	}
 	defer db.Close()
 	totalRecords := 3
-	category1 := category.NewCategory("movie", "drinks desc")
-	category2 := category.NewCategory("tv show", "drinks desc")
-	category3 := category.NewCategory("documentary", "drinks desc")
+	castMember1 := castmember.NewCastMember("John Doe 1", castmember.ACTOR)
+	castMember2 := castmember.NewCastMember("John Doe 2", castmember.ACTOR)
+	castMember3 := castmember.NewCastMember("John Doe 3", castmember.ACTOR)
 	test := struct {
 		query         domain.SearchQuery
 		expectedQuery domain.SearchQuery
@@ -256,37 +247,31 @@ func TestFindAllWhenIsLastPage(t *testing.T) {
 		},
 		isLast: true,
 	}
-	cg := NewCategoryGateway(db)
-	rows := sqlmock.NewRows([]string{"1", "2", "3", "4", "5", "6", "7", "8"})
+	cg := NewCastMemberGateway(db)
+	rows := sqlmock.NewRows([]string{"1", "2", "3", "4", "5", "6"})
 	rows.AddRow(
 		totalRecords,
-		category1.ID,
-		category1.Name,
-		category1.Description,
-		category1.IsActive,
-		category1.CreatedAt,
-		category1.UpdatedAt,
-		category1.DeletedAt,
+		castMember1.ID,
+		castMember1.Name,
+		castMember1.Type.String(),
+		castMember1.CreatedAt,
+		castMember1.UpdatedAt,
 	)
 	rows.AddRow(
 		totalRecords,
-		category2.ID,
-		category2.Name,
-		category2.Description,
-		category2.IsActive,
-		category2.CreatedAt,
-		category2.UpdatedAt,
-		category2.DeletedAt,
+		castMember2.ID,
+		castMember2.Name,
+		castMember2.Type.String(),
+		castMember2.CreatedAt,
+		castMember2.UpdatedAt,
 	)
 	rows.AddRow(
 		totalRecords,
-		category3.ID,
-		category3.Name,
-		category3.Description,
-		category3.IsActive,
-		category3.CreatedAt,
-		category3.UpdatedAt,
-		category3.DeletedAt,
+		castMember3.ID,
+		castMember3.Name,
+		castMember3.Type.String(),
+		castMember3.CreatedAt,
+		castMember3.UpdatedAt,
 	)
 	mock.ExpectQuery("SELECT").WithArgs(
 		"%"+test.expectedQuery.Term+"%", test.expectedQuery.Limit(), test.expectedQuery.Offset(),
@@ -309,11 +294,11 @@ func TestExistsByIds(t *testing.T) {
 		log.Fatalf("Failed to create DB connection: %s", err)
 	}
 	defer db.Close()
-	cg := NewCategoryGateway(db)
-	category1 := category.NewCategory("movie", "drinks desc")
-	category2 := category.NewCategory("tv show", "drinks desc")
-	category3 := category.NewCategory("documentary", "drinks desc")
-	ids := []int64{category1.ID, category2.ID, category3.ID}
+	cg := NewCastMemberGateway(db)
+	castMember1 := castmember.NewCastMember("John Doe 1", castmember.ACTOR)
+	castMember2 := castmember.NewCastMember("John Doe 2", castmember.ACTOR)
+	castMember3 := castmember.NewCastMember("John Doe 3", castmember.ACTOR)
+	ids := []int64{castMember1.ID, castMember2.ID, castMember3.ID}
 
 	rows := sqlmock.NewRows([]string{"1"})
 	rows.AddRow(ids[0])
@@ -325,7 +310,7 @@ func TestExistsByIds(t *testing.T) {
 
 	assert.Nil(t, err)
 	assert.Equal(t, 3, len(foundIds))
-	assert.Equal(t, category1.ID, foundIds[0])
-	assert.Equal(t, category2.ID, foundIds[1])
-	assert.Equal(t, category3.ID, foundIds[2])
+	assert.Equal(t, castMember1.ID, foundIds[0])
+	assert.Equal(t, castMember1.ID, foundIds[1])
+	assert.Equal(t, castMember1.ID, foundIds[2])
 }

@@ -1,6 +1,7 @@
 package castmember
 
 import (
+	"errors"
 	"time"
 
 	"github.com.br/gibranct/admin-do-catalogo/internal/domain"
@@ -17,7 +18,7 @@ type CastMember struct {
 
 type CastMemberGateway interface {
 	Create(castMember *CastMember) error
-	FindById(categoryId int64) (*CastMember, error)
+	FindById(castMemberId int64) (*CastMember, error)
 	DeleteById(castMemberId int64) error
 	Update(castMember CastMember) error
 	FindAll(query domain.SearchQuery) (*domain.Pagination[CastMember], error)
@@ -45,4 +46,16 @@ func (cm *CastMember) Update(name string, aType CastMemberType) {
 
 func (cm *CastMember) Validate(handler validator.ValidationHandler) {
 	NewCastMemberValidator(*cm, handler).Validate()
+}
+
+func (cm *CastMember) ChangeType(typeStr string) error {
+	switch typeStr {
+	case ACTOR.String():
+		cm.Type = ACTOR
+	case DIRECTOR.String():
+		cm.Type = DIRECTOR
+	default:
+		return errors.New("unknown type")
+	}
+	return nil
 }

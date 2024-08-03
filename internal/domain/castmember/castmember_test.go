@@ -37,6 +37,28 @@ func TestCastMemberUpdate(t *testing.T) {
 	assert.True(t, cm.UpdatedAt.After(updatedAt))
 }
 
+func TestCastMemberChangeType(t *testing.T) {
+	aType := ACTOR
+	cm := NewCastMember("Kevin", DIRECTOR)
+
+	err := cm.ChangeType("actor")
+
+	assert.Nil(t, err)
+	assert.Equal(t, aType, cm.Type)
+	assert.NotNil(t, cm.CreatedAt)
+	assert.NotNil(t, cm.UpdatedAt)
+}
+
+func TestCastMemberChangeTypeWithUnknownType(t *testing.T) {
+	aType := DIRECTOR
+	cm := NewCastMember("Kevin", DIRECTOR)
+
+	err := cm.ChangeType("publisher")
+
+	assert.NotNil(t, err)
+	assert.Equal(t, aType, cm.Type)
+}
+
 func TestCastMemberValidator(t *testing.T) {
 	tests := []struct {
 		name     string
