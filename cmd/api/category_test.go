@@ -76,9 +76,15 @@ func runTestServer() (*httptest.Server, *application) {
 }
 
 func cleanUp() {
-	_, err := dbContainer.db.Exec("DELETE FROM categories")
+	tx, err := dbContainer.db.Begin()
 	if err != nil {
-		log.Fatalf("failed to clean up DB: %s", err)
+		log.Fatalf("failed to create transaction: %s", err)
+	}
+	tx.Exec("DELETE FROM categories")
+	tx.Exec("DELETE FROM cast_members")
+	err = tx.Commit()
+	if err != nil {
+		log.Fatalf("failed to commit: %s", err)
 	}
 }
 

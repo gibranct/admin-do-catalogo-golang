@@ -19,6 +19,10 @@ func (app *application) routes() http.Handler {
 		r.Put("/categories/{id}", app.updateCategoryHandler)
 		r.Post("/categories/{id}/activate", app.activateCategoryHandler)
 		r.Post("/categories/{id}/deactivate", app.deactivateCategoryHandler)
+
+		r.Post("/cast-members", app.createCastMemberHandler)
+		r.Get("/cast-members", app.listCastMemberHandler)
+		r.Put("/cast-members/{id}", app.updateCastMemberHandler)
 	})
 
 	return router

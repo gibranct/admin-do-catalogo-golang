@@ -32,7 +32,7 @@ func (cg *CastMemberGateway) Create(c *castmember.CastMember) error {
 
 func (cg *CastMemberGateway) FindById(castMemberId int64) (*castmember.CastMember, error) {
 	query := `
-	 SELECT id, name, type, created_at, updated_at, FROM
+	 SELECT id, name, type, created_at, updated_at FROM
 	 cast_members 
 	 where id = $1
 	`
@@ -160,4 +160,18 @@ func (cg *CastMemberGateway) ExistsByIds(castMemberIds []int64) ([]int64, error)
 	}
 
 	return ids, nil
+}
+
+func (cg *CastMemberGateway) DeleteById(castMemberId int64) error {
+	query := `
+	 DELETE FROM cast_members where id = $1
+	`
+
+	_, err := cg.Db.Exec(query, castMemberId)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

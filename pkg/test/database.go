@@ -10,11 +10,16 @@ import (
 	"github.com/testcontainers/testcontainers-go/wait"
 )
 
+var scripts = []string{
+	"../../migrations/000001_create_categories_table.up.sql",
+	"../../migrations/000002_create_cast_members_table.up.sql",
+}
+
 func InitDatabase(ctx context.Context) (string, *postgres.PostgresContainer, error) {
 	container, err := postgres.Run(
 		ctx,
 		"postgres:15.7-alpine",
-		postgres.WithInitScripts("../../migrations/000001_create_categories_table.up.sql"),
+		postgres.WithInitScripts(scripts...),
 		testcontainers.WithWaitStrategy(
 			wait.ForLog("database system is ready to accept connections").
 				WithOccurrence(2).
