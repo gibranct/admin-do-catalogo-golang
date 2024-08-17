@@ -14,9 +14,9 @@ func (m *GenreGatewayMock) Create(g *genre.Genre) error {
 	return args.Error(0)
 }
 
-func (m *GenreGatewayMock) FindAll() ([]genre.Genre, error) {
+func (m *GenreGatewayMock) FindAll() ([]*genre.Genre, error) {
 	args := m.Called()
-	return args.Get(0).([]genre.Genre), args.Error(1)
+	return args.Get(0).([]*genre.Genre), args.Error(1)
 
 }
 func (m *GenreGatewayMock) ExistsByIds(genreIds []int64) ([]int64, error) {

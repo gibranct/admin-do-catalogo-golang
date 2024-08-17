@@ -7,6 +7,7 @@ import (
 	gateway "github.com.br/gibranct/admin-do-catalogo/internal/infra/category"
 	castmemberUsecase "github.com.br/gibranct/admin-do-catalogo/internal/usecases/castmember"
 	categoryUsecase "github.com.br/gibranct/admin-do-catalogo/internal/usecases/category"
+	genre_usecase "github.com.br/gibranct/admin-do-catalogo/internal/usecases/genre"
 )
 
 type CategoryUseCase struct {
@@ -24,9 +25,14 @@ type CastMemberUseCase struct {
 	FindAll castmemberUsecase.ListCastMembersUseCase
 }
 
+type GenreUseCase struct {
+	Create genre_usecase.CreateGenreUseCase
+}
+
 type UseCases struct {
 	Category   CategoryUseCase
 	CastMember CastMemberUseCase
+	Genre      GenreUseCase
 }
 
 func NewUseCases(db *sql.DB) UseCases {

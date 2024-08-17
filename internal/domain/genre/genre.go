@@ -17,7 +17,7 @@ type Genre struct {
 
 type GenreGateway interface {
 	Create(genre *Genre) error
-	FindAll() ([]Genre, error)
+	FindAll() ([]*Genre, error)
 	ExistsByIds(genreIds []int64) ([]int64, error)
 }
 
