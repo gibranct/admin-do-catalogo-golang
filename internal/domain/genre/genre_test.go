@@ -12,18 +12,20 @@ import (
 func TestGenreCreation(t *testing.T) {
 	name := "Drinks"
 	isActive := true
-	c := NewGenre(name)
+	g := NewGenre(name)
 
 	n := notification.CreateNotification()
 
-	c.Validate(n)
+	g.Validate(n)
 
 	assert.False(t, n.HasErrors())
-	assert.Equal(t, name, c.Name)
-	assert.Equal(t, isActive, c.IsActive)
-	assert.False(t, c.CreatedAt.IsZero())
-	assert.False(t, c.UpdatedAt.IsZero())
-	assert.Nil(t, c.DeletedAt)
+	assert.Equal(t, name, g.Name)
+	assert.Equal(t, isActive, g.IsActive)
+	assert.False(t, g.CreatedAt.IsZero())
+	assert.False(t, g.UpdatedAt.IsZero())
+	assert.True(t, len(g.CategoryIds) == 0)
+	assert.True(t, cap(g.CategoryIds) == 5)
+	assert.Nil(t, g.DeletedAt)
 }
 
 func TestGenreDeactivate(t *testing.T) {
@@ -128,4 +130,75 @@ func TestGenreUpdateToNotActive(t *testing.T) {
 	assert.False(t, c.IsActive)
 	assert.True(t, c.UpdatedAt.After(updatedAt))
 	assert.NotNil(t, c.DeletedAt)
+}
+
+func TestAddCategoryId(t *testing.T) {
+	cId1 := int64(89)
+	cId2 := int64(63)
+	cId3 := int64(23)
+	cId4 := int64(45)
+	cId5 := int64(3)
+	cId6 := int64(2)
+	g := NewGenre("genre 1")
+
+	assert.Equal(t, len(g.CategoryIds), 0)
+	assert.Equal(t, cap(g.CategoryIds), 5)
+
+	g.AddCategoryId(cId1)
+	g.AddCategoryId(cId2)
+	g.AddCategoryId(cId3)
+	g.AddCategoryId(cId4)
+	g.AddCategoryId(cId5)
+	g.AddCategoryId(cId6)
+
+	assert.Equal(t, len(g.CategoryIds), 6)
+	assert.Equal(t, cap(g.CategoryIds), 10)
+}
+
+func TestAddCategoryIds(t *testing.T) {
+	cId1 := int64(89)
+	cId2 := int64(63)
+	cId3 := int64(23)
+	cId4 := int64(45)
+	cId5 := int64(3)
+	cId6 := int64(2)
+	ids := []int64{cId1, cId2, cId3, cId4, cId5, cId6}
+	g := NewGenre("genre 1")
+
+	assert.Equal(t, len(g.CategoryIds), 0)
+	assert.Equal(t, cap(g.CategoryIds), 5)
+
+	g.AddCategoriesIds(ids)
+
+	assert.Equal(t, len(g.CategoryIds), 6)
+	assert.Equal(t, cap(g.CategoryIds), 10)
+}
+
+func TestRemoveCategoryId(t *testing.T) {
+	cId1 := int64(89)
+	cId2 := int64(63)
+	cId3 := int64(23)
+	cId4 := int64(45)
+	cId5 := int64(3)
+	cId6 := int64(2)
+	ids := []int64{cId1, cId2, cId3, cId4, cId5, cId6}
+	g := NewGenre("genre 1")
+
+	assert.Equal(t, len(g.CategoryIds), 0)
+	assert.Equal(t, cap(g.CategoryIds), 5)
+
+	g.AddCategoriesIds(ids)
+
+	assert.Equal(t, len(g.CategoryIds), 6)
+	assert.Equal(t, cap(g.CategoryIds), 10)
+
+	counter := len(g.CategoryIds)
+
+	for _, cId := range g.CategoryIds {
+		g.RemoveCategoryId(cId)
+		counter--
+		assert.Equal(t, len(g.CategoryIds), counter)
+	}
+
+	assert.Empty(t, g.CategoryIds)
 }

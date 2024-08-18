@@ -20,10 +20,18 @@ func TestCreateGenre(t *testing.T) {
 	defer db.Close()
 	cg := NewGenreGateway(db)
 	g := genre.NewGenre("drinks")
-	query := "INSERT INTO genres"
-	mock.ExpectQuery(query).WithArgs(
+	categoryId := int64(55)
+	g.AddCategoryId(categoryId)
+	query1 := "INSERT INTO genres"
+
+	mock.ExpectBegin()
+	mock.ExpectQuery(query1).WithArgs(
 		g.Name, g.IsActive, g.CreatedAt, g.UpdatedAt,
 	).WillReturnRows(sqlmock.NewRows([]string{"1"}).AddRow(1))
+
+	query2 := "INSERT INTO genres_categories"
+	mock.ExpectExec(query2).WithoutArgs().WillReturnResult(sqlmock.NewResult(categoryId, 1))
+	mock.ExpectCommit()
 
 	err = cg.Create(g)
 	if err != nil {
@@ -42,11 +50,15 @@ func TestCreateCategoryWhenFails(t *testing.T) {
 	defer db.Close()
 	gg := NewGenreGateway(db)
 	g := genre.NewGenre("drinks")
+
 	query := "INSERT INTO genres"
 	expectedError := errors.New("failed to create genre")
+
+	mock.ExpectBegin()
 	mock.ExpectQuery(query).WithArgs(
 		g.Name, g.IsActive, g.CreatedAt, g.UpdatedAt,
 	).WillReturnError(expectedError)
+	mock.ExpectRollback()
 
 	err = gg.Create(g)
 	assert.NotNil(t, err)

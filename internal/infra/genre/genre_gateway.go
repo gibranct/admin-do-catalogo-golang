@@ -2,6 +2,7 @@ package infra_genre
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"strconv"
 	"strings"
@@ -18,14 +19,38 @@ func NewGenreGateway(db *sql.DB) *GenreGateway {
 }
 
 func (cg *GenreGateway) Create(c *genre.Genre) error {
-	query := `
+
+	tx, err := cg.Db.Begin()
+
+	if err != nil {
+		return errors.New("unable to create transaction")
+	}
+
+	defer tx.Rollback()
+
+	query1 := `
 		INSERT INTO genres (name, is_active, created_at, updated_at)
 		VALUES ($1, $2, $3, $4)
 		RETURNING id
 	`
+	query2 := `INSERT INTO genres_categories (genre_id, category_id) VALUES (%d, %d)`
+
 	args := []any{c.Name, c.IsActive, c.CreatedAt, c.UpdatedAt}
 
-	return cg.Db.QueryRow(query, args...).Scan(&c.ID)
+	err = tx.QueryRow(query1, args...).Scan(&c.ID)
+
+	if err != nil {
+		return err
+	}
+
+	for _, cId := range c.CategoryIds {
+		_, err = tx.Exec(fmt.Sprintf(query2, c.ID, cId))
+		if err != nil {
+			return err
+		}
+	}
+
+	return tx.Commit()
 }
 
 func (cg *GenreGateway) FindAll() ([]*genre.Genre, error) {
