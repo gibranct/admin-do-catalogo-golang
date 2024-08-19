@@ -5,6 +5,7 @@ import (
 
 	castmember "github.com.br/gibranct/admin-do-catalogo/internal/infra/castmember"
 	gateway "github.com.br/gibranct/admin-do-catalogo/internal/infra/category"
+	infra_genre "github.com.br/gibranct/admin-do-catalogo/internal/infra/genre"
 	castmemberUsecase "github.com.br/gibranct/admin-do-catalogo/internal/usecases/castmember"
 	categoryUsecase "github.com.br/gibranct/admin-do-catalogo/internal/usecases/category"
 	genre_usecase "github.com.br/gibranct/admin-do-catalogo/internal/usecases/genre"
@@ -38,6 +39,7 @@ type UseCases struct {
 func NewUseCases(db *sql.DB) UseCases {
 	cGateway := gateway.NewCategoryGateway(db)
 	cmGateway := castmember.NewCastMemberGateway(db)
+	gGateway := infra_genre.NewGenreGateway(db)
 	return UseCases{
 		Category: CategoryUseCase{
 			Create: categoryUsecase.DefaultCreateCategoryUseCase{
@@ -68,6 +70,12 @@ func NewUseCases(db *sql.DB) UseCases {
 			},
 			FindAll: &castmemberUsecase.DefaultListCastMembersUseCase{
 				Gateway: cmGateway,
+			},
+		},
+		Genre: GenreUseCase{
+			Create: genre_usecase.DefaultCreateGenreUseCase{
+				Gateway:         gGateway,
+				CategoryGateway: cGateway,
 			},
 		},
 	}

@@ -1,6 +1,12 @@
 package genre_usecase
 
 import (
+	"fmt"
+	"slices"
+	"strconv"
+	"strings"
+
+	"github.com.br/gibranct/admin-do-catalogo/internal/domain/category"
 	"github.com.br/gibranct/admin-do-catalogo/internal/domain/genre"
 	"github.com.br/gibranct/admin-do-catalogo/pkg/notification"
 )
@@ -10,7 +16,8 @@ type CreateGenreOutput struct {
 }
 
 type CreateGenreCommand struct {
-	Name string
+	Name        string
+	CategoryIds *[]int64
 }
 
 type CreateGenreUseCase interface {
@@ -18,7 +25,8 @@ type CreateGenreUseCase interface {
 }
 
 type DefaultCreateGenreUseCase struct {
-	Gateway genre.GenreGateway
+	Gateway         genre.GenreGateway
+	CategoryGateway category.CategoryGateway
 }
 
 func (useCase DefaultCreateGenreUseCase) Execute(
@@ -35,7 +43,14 @@ func (useCase DefaultCreateGenreUseCase) Execute(
 		return n, nil
 	}
 
-	err := useCase.Gateway.Create(genre)
+	err := useCase.validateCategories(*command.CategoryIds)
+
+	if err != nil {
+		n.Add(err)
+		return n, nil
+	}
+
+	err = useCase.Gateway.Create(genre)
 
 	if err != nil {
 		n.Add(err)
@@ -45,4 +60,29 @@ func (useCase DefaultCreateGenreUseCase) Execute(
 	return nil, &CreateGenreOutput{
 		ID: genre.ID,
 	}
+}
+
+func (useCase DefaultCreateGenreUseCase) validateCategories(categoriesIds []int64) error {
+	ids, err := useCase.CategoryGateway.ExistsByIds(categoriesIds)
+	if err != nil {
+		return err
+	}
+
+	if slices.Equal(ids, categoriesIds) {
+		return nil
+	}
+
+	var missingIds []string
+
+	for _, id := range categoriesIds {
+		if !slices.Contains(ids, id) {
+			missingIds = append(missingIds, strconv.FormatInt(id, 10))
+		}
+	}
+
+	if len(missingIds) != 0 {
+		return fmt.Errorf("missing category ids: %s", strings.Join(missingIds, ","))
+	}
+
+	return nil
 }
