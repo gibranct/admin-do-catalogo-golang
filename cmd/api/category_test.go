@@ -82,6 +82,7 @@ func cleanUp() {
 	}
 	tx.Exec("DELETE FROM categories")
 	tx.Exec("DELETE FROM cast_members")
+	tx.Exec("DELETE FROM genres")
 	err = tx.Commit()
 	if err != nil {
 		log.Fatalf("failed to commit: %s", err)

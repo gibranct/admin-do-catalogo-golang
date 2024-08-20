@@ -49,6 +49,7 @@ func (useCase DefaultCreateGenreUseCase) Execute(
 		n.Add(err)
 		return n, nil
 	}
+	genre.AddCategoriesIds(*command.CategoryIds)
 
 	err = useCase.Gateway.Create(genre)
 
@@ -63,6 +64,10 @@ func (useCase DefaultCreateGenreUseCase) Execute(
 }
 
 func (useCase DefaultCreateGenreUseCase) validateCategories(categoriesIds []int64) error {
+	if len(categoriesIds) == 0 {
+		return nil
+	}
+
 	ids, err := useCase.CategoryGateway.ExistsByIds(categoriesIds)
 	if err != nil {
 		return err

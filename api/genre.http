@@ -1,0 +1,12 @@
+POST http://localhost:4000/v1/genres HTTP/1.1
+Host: localhost:4000
+Content-Type: application/json
+
+{
+    "name": "Horror",
+    "categoryIds": [1,3]
+}
+
+###
+GET http://localhost:4000/v1/genres HTTP/1.1
+Host: localhost:4000

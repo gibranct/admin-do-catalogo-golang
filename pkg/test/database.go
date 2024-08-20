@@ -13,6 +13,7 @@ import (
 var scripts = []string{
 	"../../migrations/000001_create_categories_table.up.sql",
 	"../../migrations/000002_create_cast_members_table.up.sql",
+	"../../migrations/000003_create_genres_table.sql.up.sql",
 }
 
 func InitDatabase(ctx context.Context) (string, *postgres.PostgresContainer, error) {

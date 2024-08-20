@@ -4,6 +4,7 @@ import (
 	"errors"
 	"testing"
 
+	"github.com.br/gibranct/admin-do-catalogo/internal/domain/genre"
 	"github.com.br/gibranct/admin-do-catalogo/pkg/mocks"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -21,6 +22,9 @@ func TestGenreCreationUseCase(t *testing.T) {
 		Name:        "Drinks",
 		CategoryIds: &categoryIds,
 	}
+	newGenre := genre.NewGenre(command.Name)
+	newGenre.AddCategoriesIds(*command.CategoryIds)
+
 	gatewayMock.On("Create", mock.Anything).Return(nil)
 	categoryGatewayMock.On("ExistsByIds", *command.CategoryIds).Return(*command.CategoryIds, nil)
 

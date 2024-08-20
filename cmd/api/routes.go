@@ -23,6 +23,8 @@ func (app *application) routes() http.Handler {
 		r.Post("/cast-members", app.createCastMemberHandler)
 		r.Get("/cast-members", app.listCastMemberHandler)
 		r.Put("/cast-members/{id}", app.updateCastMemberHandler)
+
+		r.Post("/genres", app.createGenreHandler)
 	})
 
 	return router
