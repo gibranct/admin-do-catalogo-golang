@@ -67,7 +67,7 @@ func (cg *GenreGateway) FindAll() ([]*genre.Genre, error) {
 
 	defer genreRows.Close()
 	genres := []*genre.Genre{}
-	genresMap := make(map[int64][]int64)
+	genresMap := make(map[int64]*genre.Genre)
 
 	for genreRows.Next() {
 		var g genre.Genre
@@ -86,17 +86,19 @@ func (cg *GenreGateway) FindAll() ([]*genre.Genre, error) {
 			return nil, err
 		}
 
-		genresMap[g.ID] = append(genresMap[g.ID], categoryId)
+		if genresMap[g.ID] == nil {
+			genresMap[g.ID] = &g
+		}
+		genresMap[g.ID].AddCategoryId(categoryId)
 
-		genres = append(genres, &g)
 	}
 
 	if err = genreRows.Err(); err != nil {
 		return nil, err
 	}
 
-	for _, genre := range genres {
-		genre.AddCategoriesIds(genresMap[genre.ID])
+	for _, v := range genresMap {
+		genres = append(genres, v)
 	}
 
 	return genres, nil

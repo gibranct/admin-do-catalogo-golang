@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	category_usecase "github.com.br/gibranct/admin-do-catalogo/internal/usecases/category"
+	genre_usecase "github.com.br/gibranct/admin-do-catalogo/internal/usecases/genre"
 	"github.com.br/gibranct/admin-do-catalogo/pkg/test"
 	"github.com/stretchr/testify/assert"
 )
@@ -74,5 +75,44 @@ func TestCreateGenre(t *testing.T) {
 		assert.Nil(t, err)
 		assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
 		assert.Equal(t, expecBody, body)
+	})
+}
+
+func TestFindAllGenres(t *testing.T) {
+	t.Cleanup(cleanUp)
+	ts, app := runTestServer()
+	defer ts.Close()
+	command1 := category_usecase.CreateCategoryCommand{
+		Name:        "test 1 b",
+		Description: "desc fake a",
+	}
+	command2 := category_usecase.CreateCategoryCommand{
+		Name:        "test 1 a",
+		Description: "desc fake b",
+	}
+	_, cate1 := app.useCases.Category.Create.Execute(command1)
+	_, cate2 := app.useCases.Category.Create.Execute(command2)
+
+	categoryIds := []int64{cate1.ID, cate2.ID}
+	command3 := genre_usecase.CreateGenreCommand{
+		Name:        "Genre 1",
+		CategoryIds: &categoryIds,
+	}
+
+	_, genre := app.useCases.Genre.Create.Execute(command3)
+
+	t.Run("should return all genres with categories", func(t *testing.T) {
+		resp, err := http.Get(
+			fmt.Sprintf("%s/v1/genres", ts.URL),
+		)
+		expecBody := fmt.Sprintf(
+			`[{"id":%d,"name":"%s","active":true,"categoryIds":[%d,%d]}]`,
+			genre.ID, command3.Name, cate1.ID, cate2.ID,
+		)
+		body := test.ReadRespBody(*resp)
+
+		assert.Nil(t, err)
+		assert.Equal(t, http.StatusOK, resp.StatusCode)
+		assert.Contains(t, body, expecBody)
 	})
 }

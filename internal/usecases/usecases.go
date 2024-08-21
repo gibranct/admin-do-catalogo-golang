@@ -27,7 +27,8 @@ type CastMemberUseCase struct {
 }
 
 type GenreUseCase struct {
-	Create genre_usecase.CreateGenreUseCase
+	Create  genre_usecase.CreateGenreUseCase
+	FindAll genre_usecase.ListGenresUseCase
 }
 
 type UseCases struct {
@@ -76,6 +77,9 @@ func NewUseCases(db *sql.DB) UseCases {
 			Create: genre_usecase.DefaultCreateGenreUseCase{
 				Gateway:         gGateway,
 				CategoryGateway: cGateway,
+			},
+			FindAll: genre_usecase.DefaultListGenresUseCase{
+				Gateway: gGateway,
 			},
 		},
 	}

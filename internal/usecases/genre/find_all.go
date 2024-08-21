@@ -1,28 +1,25 @@
 package genre_usecase
 
 import (
-	"time"
-
 	"github.com.br/gibranct/admin-do-catalogo/internal/domain/genre"
 )
 
 type ListGenresOutput struct {
-	ID          int64     `json:"id"`
-	Name        string    `json:"name"`
-	Active      bool      `json:"active"`
-	CategoryIds []int64   `json:"categoryIds"`
-	CreatedAt   time.Time `json:"createdAt"`
+	ID          int64   `json:"id"`
+	Name        string  `json:"name"`
+	Active      bool    `json:"active"`
+	CategoryIds []int64 `json:"categoryIds"`
 }
 
 type ListGenresUseCase interface {
-	Execute() ([]ListGenresOutput, error)
+	Execute() ([]*ListGenresOutput, error)
 }
 
 type DefaultListGenresUseCase struct {
 	Gateway genre.GenreGateway
 }
 
-func (useCase *DefaultListGenresUseCase) Execute() ([]*ListGenresOutput, error) {
+func (useCase DefaultListGenresUseCase) Execute() ([]*ListGenresOutput, error) {
 	genres, err := useCase.Gateway.FindAll()
 
 	if err != nil {
@@ -37,7 +34,6 @@ func (useCase *DefaultListGenresUseCase) Execute() ([]*ListGenresOutput, error) 
 			Name:        item.Name,
 			Active:      item.IsActive,
 			CategoryIds: item.CategoryIds,
-			CreatedAt:   item.CreatedAt,
 		}
 
 		outputs = append(outputs, output)

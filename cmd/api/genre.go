@@ -34,3 +34,14 @@ func (app *application) createGenreHandler(w http.ResponseWriter, r *http.Reques
 		app.serverErrorResponse(w, err)
 	}
 }
+
+func (app *application) listGenresHandler(w http.ResponseWriter, _ *http.Request) {
+	output, err := app.useCases.Genre.FindAll.Execute()
+
+	if err != nil {
+		app.serverErrorResponse(w, err)
+		return
+	}
+
+	app.writeJson(w, http.StatusOK, output, nil)
+}
