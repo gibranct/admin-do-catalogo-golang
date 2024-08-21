@@ -54,37 +54,49 @@ func (cg *GenreGateway) Create(c *genre.Genre) error {
 }
 
 func (cg *GenreGateway) FindAll() ([]*genre.Genre, error) {
-	sql := `SELECT id, name, is_active, created_at, updated_at, deleted_at FROM genres`
+	sql := `
+		SELECT id, name, is_active, created_at, updated_at, deleted_at, gc.category_id FROM genres as g
+		LEFT JOIN genres_categories as gc ON g.id = gc.genre_id
+	`
 
-	rows, err := cg.Db.Query(sql)
+	genreRows, err := cg.Db.Query(sql)
 
 	if err != nil {
 		return nil, err
 	}
 
-	defer rows.Close()
+	defer genreRows.Close()
 	genres := []*genre.Genre{}
+	genresMap := make(map[int64][]int64)
 
-	for rows.Next() {
+	for genreRows.Next() {
 		var g genre.Genre
-		err := rows.Scan(
+		var categoryId int64
+		err := genreRows.Scan(
 			&g.ID,
 			&g.Name,
 			&g.IsActive,
 			&g.CreatedAt,
 			&g.UpdatedAt,
 			&g.DeletedAt,
+			&categoryId,
 		)
 
 		if err != nil {
 			return nil, err
 		}
 
+		genresMap[g.ID] = append(genresMap[g.ID], categoryId)
+
 		genres = append(genres, &g)
 	}
 
-	if err = rows.Err(); err != nil {
+	if err = genreRows.Err(); err != nil {
 		return nil, err
+	}
+
+	for _, genre := range genres {
+		genre.AddCategoriesIds(genresMap[genre.ID])
 	}
 
 	return genres, nil

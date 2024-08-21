@@ -74,11 +74,17 @@ func TestFindAllGenres(t *testing.T) {
 	}
 	defer db.Close()
 	genre1 := genre.NewGenre("movie")
+	genre1.ID = int64(1)
+	categoryId1 := int64(23)
 	genre2 := genre.NewGenre("tv show")
+	genre2.ID = int64(2)
+	categoryId2 := int64(3)
 	genre3 := genre.NewGenre("documentary")
+	categoryId3 := int64(2)
+	genre3.ID = int64(3)
 
 	gg := NewGenreGateway(db)
-	rows := sqlmock.NewRows([]string{"1", "2", "3", "4", "5", "6"})
+	rows := sqlmock.NewRows([]string{"1", "2", "3", "4", "5", "6", "7"})
 	rows.AddRow(
 		genre1.ID,
 		genre1.Name,
@@ -86,6 +92,7 @@ func TestFindAllGenres(t *testing.T) {
 		genre1.CreatedAt,
 		genre1.UpdatedAt,
 		genre1.DeletedAt,
+		categoryId1,
 	)
 	rows.AddRow(
 		genre2.ID,
@@ -94,6 +101,7 @@ func TestFindAllGenres(t *testing.T) {
 		genre2.CreatedAt,
 		genre2.UpdatedAt,
 		genre2.DeletedAt,
+		categoryId2,
 	)
 	rows.AddRow(
 		genre3.ID,
@@ -102,13 +110,17 @@ func TestFindAllGenres(t *testing.T) {
 		genre3.CreatedAt,
 		genre3.UpdatedAt,
 		genre3.DeletedAt,
+		categoryId3,
 	)
 	mock.ExpectQuery("SELECT").WithArgs().WillReturnRows(rows)
 
 	genres, err := gg.FindAll()
 
 	assert.Nil(t, err)
-	assert.Equal(t, 3, len(genres))
+	assert.Len(t, genres, 3)
+	assert.Len(t, genres[0].CategoryIds, 1)
+	assert.Len(t, genres[1].CategoryIds, 1)
+	assert.Len(t, genres[2].CategoryIds, 1)
 }
 
 func TestExistsByIds(t *testing.T) {
