@@ -149,3 +149,37 @@ func TestExistsByIds(t *testing.T) {
 	assert.Equal(t, genre2.ID, foundIds[1])
 	assert.Equal(t, genre3.ID, foundIds[2])
 }
+
+func TestDeleteGenre(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		log.Fatalf("Failed to create DB connection: %s", err)
+	}
+	defer db.Close()
+	gg := NewGenreGateway(db)
+	genreId := int64(56)
+
+	mock.ExpectExec("DELETE").WithArgs(genreId).WillReturnResult(sqlmock.NewResult(int64(1), 1))
+
+	err = gg.DeleteById(genreId)
+
+	assert.Nil(t, err)
+}
+
+func TestDeleteGenreWhenFails(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		log.Fatalf("Failed to create DB connection: %s", err)
+	}
+	defer db.Close()
+	gg := NewGenreGateway(db)
+	genreId := int64(56)
+	erro := errors.New("failed to delete genre")
+
+	mock.ExpectExec("DELETE").WithArgs(genreId).WillReturnError(erro)
+
+	err = gg.DeleteById(genreId)
+
+	assert.NotNil(t, err)
+	assert.Equal(t, erro, err)
+}

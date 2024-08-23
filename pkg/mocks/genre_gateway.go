@@ -23,3 +23,8 @@ func (m *GenreGatewayMock) ExistsByIds(genreIds []int64) ([]int64, error) {
 	args := m.Called(genreIds)
 	return args.Get(0).([]int64), args.Error(1)
 }
+
+func (m *GenreGatewayMock) DeleteById(genreId int64) error {
+	args := m.Called(genreId)
+	return args.Error(0)
+}

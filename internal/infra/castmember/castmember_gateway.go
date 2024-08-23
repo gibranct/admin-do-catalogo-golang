@@ -169,9 +169,5 @@ func (cg *CastMemberGateway) DeleteById(castMemberId int64) error {
 
 	_, err := cg.Db.Exec(query, castMemberId)
 
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return err
 }

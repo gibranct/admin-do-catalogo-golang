@@ -140,3 +140,11 @@ func (cg *GenreGateway) ExistsByIds(genreIds []int64) ([]int64, error) {
 
 	return ids, nil
 }
+
+func (cg *GenreGateway) DeleteById(genreId int64) error {
+	query := "DELETE FROM genres g where g.id=$1"
+
+	_, err := cg.Db.Exec(query, genreId)
+
+	return err
+}
