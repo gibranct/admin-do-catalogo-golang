@@ -26,6 +26,7 @@ func (app *application) routes() http.Handler {
 
 		r.Post("/genres", app.createGenreHandler)
 		r.Get("/genres", app.listGenresHandler)
+		r.Delete("/genres/{id}", app.deleteGenreByIdHandler)
 	})
 
 	return router
