@@ -3,7 +3,7 @@ Host: localhost:4000
 Content-Type: application/json
 
 {
-    "name": "Horror",
+    "name": "Action",
     "categoryIds": [1,3]
 }
 
