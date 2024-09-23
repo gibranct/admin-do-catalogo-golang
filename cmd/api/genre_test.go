@@ -113,7 +113,7 @@ func TestFindAllGenres(t *testing.T) {
 
 		assert.Nil(t, err)
 		assert.Equal(t, http.StatusOK, resp.StatusCode)
-		assert.Contains(t, body, expecBody)
+		assert.Regexp(t, expecBody, body)
 	})
 }
 

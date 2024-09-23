@@ -11,12 +11,19 @@ func (n *Notification) Add(err error) validator.ValidationHandler {
 	return n
 }
 
-func (n Notification) GetErrors() []error {
+func (n *Notification) GetErrors() []error {
 	return n.errors
 }
 
-func (n Notification) HasErrors() bool {
+func (n *Notification) HasErrors() bool {
 	return len(n.errors) != 0
+}
+
+func (n *Notification) Append(handler validator.ValidationHandler) validator.ValidationHandler {
+	if handler.HasErrors() {
+		n.errors = append(n.errors, handler.GetErrors()...)
+	}
+	return n
 }
 
 func CreateNotification() *Notification {

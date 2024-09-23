@@ -80,6 +80,12 @@ func cleanUp() {
 	if err != nil {
 		log.Fatalf("failed to create transaction: %s", err)
 	}
+	tx.Exec("DELETE FROM videos_video_media")
+	tx.Exec("DELETE FROM videos_image_media")
+	tx.Exec("DELETE FROM videos_categories")
+	tx.Exec("DELETE FROM videos_genres")
+	tx.Exec("DELETE FROM videos_cast_members")
+	tx.Exec("DELETE FROM videos")
 	tx.Exec("DELETE FROM categories")
 	tx.Exec("DELETE FROM cast_members")
 	tx.Exec("DELETE FROM genres")

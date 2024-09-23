@@ -6,9 +6,11 @@ import (
 	castmember "github.com.br/gibranct/admin-do-catalogo/internal/infra/castmember"
 	gateway "github.com.br/gibranct/admin-do-catalogo/internal/infra/category"
 	infra_genre "github.com.br/gibranct/admin-do-catalogo/internal/infra/genre"
+	infra_video "github.com.br/gibranct/admin-do-catalogo/internal/infra/video"
 	castmemberUsecase "github.com.br/gibranct/admin-do-catalogo/internal/usecases/castmember"
 	categoryUsecase "github.com.br/gibranct/admin-do-catalogo/internal/usecases/category"
 	genre_usecase "github.com.br/gibranct/admin-do-catalogo/internal/usecases/genre"
+	video_usecase "github.com.br/gibranct/admin-do-catalogo/internal/usecases/video"
 )
 
 type CategoryUseCase struct {
@@ -32,16 +34,22 @@ type GenreUseCase struct {
 	DeleteById genre_usecase.DeleteGenreUseCase
 }
 
+type VideoUseCase struct {
+	Create video_usecase.CreateVideoUseCase
+}
+
 type UseCases struct {
 	Category   CategoryUseCase
 	CastMember CastMemberUseCase
 	Genre      GenreUseCase
+	Video      VideoUseCase
 }
 
 func NewUseCases(db *sql.DB) UseCases {
 	cGateway := gateway.NewCategoryGateway(db)
 	cmGateway := castmember.NewCastMemberGateway(db)
 	gGateway := infra_genre.NewGenreGateway(db)
+	vg := infra_video.NewVideoGateway(db)
 	return UseCases{
 		Category: CategoryUseCase{
 			Create: categoryUsecase.DefaultCreateCategoryUseCase{
@@ -84,6 +92,14 @@ func NewUseCases(db *sql.DB) UseCases {
 			},
 			DeleteById: genre_usecase.DefaultDeleteGenreUseCase{
 				Gateway: gGateway,
+			},
+		},
+		Video: VideoUseCase{
+			Create: video_usecase.DefaultCreateVideoUseCase{
+				Gateway:           vg,
+				CategoryGateway:   cGateway,
+				GenreGateway:      gGateway,
+				CastMemberGateway: cmGateway,
 			},
 		},
 	}
