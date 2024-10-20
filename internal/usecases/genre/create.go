@@ -6,9 +6,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com.br/gibranct/admin-do-catalogo/internal/domain/category"
-	"github.com.br/gibranct/admin-do-catalogo/internal/domain/genre"
-	"github.com.br/gibranct/admin-do-catalogo/pkg/notification"
+	"github.com.br/gibranct/admin_do_catalogo/internal/domain/category"
+	"github.com.br/gibranct/admin_do_catalogo/internal/domain/genre"
+	"github.com.br/gibranct/admin_do_catalogo/pkg/notification"
 )
 
 type CreateGenreOutput struct {

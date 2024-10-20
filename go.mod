@@ -1,6 +1,6 @@
-module github.com.br/gibranct/admin-do-catalogo
+module github.com.br/gibranct/admin_do_catalogo
 
-go 1.22.1
+go 1.22
 
 require (
 	github.com/DATA-DOG/go-sqlmock v1.5.2

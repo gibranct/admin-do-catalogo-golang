@@ -5,8 +5,8 @@ import (
 	"log"
 	"testing"
 
-	"github.com.br/gibranct/admin-do-catalogo/internal/domain/video"
-	infra_video "github.com.br/gibranct/admin-do-catalogo/internal/infra/video"
+	"github.com.br/gibranct/admin_do_catalogo/internal/domain/video"
+	infra_video "github.com.br/gibranct/admin_do_catalogo/internal/infra/video"
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/stretchr/testify/assert"
 )

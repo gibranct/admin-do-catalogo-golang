@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com.br/gibranct/admin-do-catalogo/internal/domain/category"
-	"github.com.br/gibranct/admin-do-catalogo/pkg/mocks"
+	"github.com.br/gibranct/admin_do_catalogo/internal/domain/category"
+	"github.com.br/gibranct/admin_do_catalogo/pkg/mocks"
 	"github.com/stretchr/testify/assert"
 )
 

@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com.br/gibranct/admin-do-catalogo/internal/domain"
-	"github.com.br/gibranct/admin-do-catalogo/internal/domain/castmember"
-	castmemberUsecase "github.com.br/gibranct/admin-do-catalogo/internal/usecases/castmember"
+	"github.com.br/gibranct/admin_do_catalogo/internal/domain"
+	"github.com.br/gibranct/admin_do_catalogo/internal/domain/castmember"
+	castmemberUsecase "github.com.br/gibranct/admin_do_catalogo/internal/usecases/castmember"
 	"github.com/go-chi/chi/v5"
 )
 

@@ -1,7 +1,6 @@
 package video
 
 import (
-	"errors"
 	"fmt"
 )
 
@@ -46,5 +45,5 @@ func GetVideoType(value string) (VideoMediaType, error) {
 		return THUMBNAIL_HALF, nil
 	}
 
-	return 0, errors.New(fmt.Sprintf("unknown video type: %s", value))
+	return 0, fmt.Errorf("unknown video type: %s", value)
 }

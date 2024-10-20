@@ -8,7 +8,7 @@ import (
 	"os"
 	"time"
 
-	usecase "github.com.br/gibranct/admin-do-catalogo/internal/usecases"
+	usecase "github.com.br/gibranct/admin_do_catalogo/internal/usecases"
 	_ "github.com/lib/pq"
 )
 

@@ -6,11 +6,11 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com.br/gibranct/admin-do-catalogo/internal/domain/castmember"
-	"github.com.br/gibranct/admin-do-catalogo/internal/domain/category"
-	"github.com.br/gibranct/admin-do-catalogo/internal/domain/genre"
-	"github.com.br/gibranct/admin-do-catalogo/internal/domain/video"
-	"github.com.br/gibranct/admin-do-catalogo/pkg/notification"
+	"github.com.br/gibranct/admin_do_catalogo/internal/domain/castmember"
+	"github.com.br/gibranct/admin_do_catalogo/internal/domain/category"
+	"github.com.br/gibranct/admin_do_catalogo/internal/domain/genre"
+	"github.com.br/gibranct/admin_do_catalogo/internal/domain/video"
+	"github.com.br/gibranct/admin_do_catalogo/pkg/notification"
 )
 
 type CreateVideoOutput struct {
