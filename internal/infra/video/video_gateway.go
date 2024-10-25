@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 
-	"github.com.br/gibranct/admin-do-catalogo/internal/domain/video"
+	"github.com.br/gibranct/admin_do_catalogo/internal/domain/video"
 )
 
 type VideoGateway struct {

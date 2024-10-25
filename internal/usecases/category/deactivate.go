@@ -1,6 +1,6 @@
 package category_usecase
 
-import "github.com.br/gibranct/admin-do-catalogo/internal/domain/category"
+import "github.com.br/gibranct/admin_do_catalogo/internal/domain/category"
 
 type DeactivateCategoryUseCase interface {
 	Execute(categoryId int64) error

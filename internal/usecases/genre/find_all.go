@@ -3,7 +3,7 @@ package genre_usecase
 import (
 	"time"
 
-	"github.com.br/gibranct/admin-do-catalogo/internal/domain/genre"
+	"github.com.br/gibranct/admin_do_catalogo/internal/domain/genre"
 )
 
 type ListGenresOutput struct {

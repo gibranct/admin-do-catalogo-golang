@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com.br/gibranct/admin-do-catalogo/internal/domain"
-	categoryUseCase "github.com.br/gibranct/admin-do-catalogo/internal/usecases/category"
+	"github.com.br/gibranct/admin_do_catalogo/internal/domain"
+	categoryUseCase "github.com.br/gibranct/admin_do_catalogo/internal/usecases/category"
 	"github.com/go-chi/chi/v5"
 )
 

@@ -3,7 +3,7 @@ package main
 import (
 	"net/http"
 
-	video_usecase "github.com.br/gibranct/admin-do-catalogo/internal/usecases/video"
+	video_usecase "github.com.br/gibranct/admin_do_catalogo/internal/usecases/video"
 )
 
 func (app *application) createVideoHandler(w http.ResponseWriter, r *http.Request) {

@@ -7,11 +7,11 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com.br/gibranct/admin-do-catalogo/internal/domain/castmember"
-	castmember_usecase "github.com.br/gibranct/admin-do-catalogo/internal/usecases/castmember"
-	category_usecase "github.com.br/gibranct/admin-do-catalogo/internal/usecases/category"
-	genre_usecase "github.com.br/gibranct/admin-do-catalogo/internal/usecases/genre"
-	"github.com.br/gibranct/admin-do-catalogo/pkg/test"
+	"github.com.br/gibranct/admin_do_catalogo/internal/domain/castmember"
+	castmember_usecase "github.com.br/gibranct/admin_do_catalogo/internal/usecases/castmember"
+	category_usecase "github.com.br/gibranct/admin_do_catalogo/internal/usecases/category"
+	genre_usecase "github.com.br/gibranct/admin_do_catalogo/internal/usecases/genre"
+	"github.com.br/gibranct/admin_do_catalogo/pkg/test"
 	"github.com/stretchr/testify/assert"
 )
 

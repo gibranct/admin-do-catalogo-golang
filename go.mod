@@ -1,10 +1,11 @@
-module github.com.br/gibranct/admin-do-catalogo
+module github.com.br/gibranct/admin_do_catalogo
 
-go 1.22.1
+go 1.22
 
 require (
 	github.com/DATA-DOG/go-sqlmock v1.5.2
 	github.com/go-chi/chi/v5 v5.1.0
+	github.com/joho/godotenv v1.5.1
 	github.com/lib/pq v1.10.9
 	github.com/stretchr/testify v1.9.0
 	github.com/testcontainers/testcontainers-go v0.32.0

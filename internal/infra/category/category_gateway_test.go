@@ -5,8 +5,8 @@ import (
 	"log"
 	"testing"
 
-	"github.com.br/gibranct/admin-do-catalogo/internal/domain"
-	"github.com.br/gibranct/admin-do-catalogo/internal/domain/category"
+	"github.com.br/gibranct/admin_do_catalogo/internal/domain"
+	"github.com.br/gibranct/admin_do_catalogo/internal/domain/category"
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/stretchr/testify/assert"
 

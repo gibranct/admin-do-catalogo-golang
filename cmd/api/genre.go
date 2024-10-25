@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
-	genre_usecase "github.com.br/gibranct/admin-do-catalogo/internal/usecases/genre"
+	genre_usecase "github.com.br/gibranct/admin_do_catalogo/internal/usecases/genre"
 	"github.com/go-chi/chi/v5"
 )
 

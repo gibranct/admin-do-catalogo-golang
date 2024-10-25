@@ -14,9 +14,9 @@ import (
 	"testing"
 	"time"
 
-	usecase "github.com.br/gibranct/admin-do-catalogo/internal/usecases"
-	category_usecase "github.com.br/gibranct/admin-do-catalogo/internal/usecases/category"
-	"github.com.br/gibranct/admin-do-catalogo/pkg/test"
+	usecase "github.com.br/gibranct/admin_do_catalogo/internal/usecases"
+	category_usecase "github.com.br/gibranct/admin_do_catalogo/internal/usecases/category"
+	"github.com.br/gibranct/admin_do_catalogo/pkg/test"
 	"github.com/stretchr/testify/assert"
 	"github.com/testcontainers/testcontainers-go/modules/postgres"
 )

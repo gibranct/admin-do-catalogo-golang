@@ -4,8 +4,8 @@ import (
 	"errors"
 	"testing"
 
-	"github.com.br/gibranct/admin-do-catalogo/internal/domain/genre"
-	"github.com.br/gibranct/admin-do-catalogo/pkg/mocks"
+	"github.com.br/gibranct/admin_do_catalogo/internal/domain/genre"
+	"github.com.br/gibranct/admin_do_catalogo/pkg/mocks"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )
