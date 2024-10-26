@@ -1,10 +1,11 @@
-package category
+package category_test
 
 import (
 	"strings"
 	"testing"
 	"time"
 
+	"github.com.br/gibranct/admin_do_catalogo/internal/domain/category"
 	"github.com.br/gibranct/admin_do_catalogo/pkg/notification"
 	"github.com/stretchr/testify/assert"
 )
@@ -13,7 +14,7 @@ func TestCategoryCreation(t *testing.T) {
 	name := "Drinks"
 	desc := "Drinks desc"
 	isActive := true
-	c := NewCategory(name, desc)
+	c := category.NewCategory(name, desc)
 
 	n := notification.CreateNotification()
 
@@ -31,7 +32,7 @@ func TestCategoryCreation(t *testing.T) {
 func TestCategoryDeactivate(t *testing.T) {
 	name := "Drinks"
 	desc := "Drinks desc"
-	c := NewCategory(name, desc)
+	c := category.NewCategory(name, desc)
 	updatedAt := c.UpdatedAt
 
 	time.Sleep(1 * time.Millisecond)
@@ -46,7 +47,7 @@ func TestCategoryDeactivate(t *testing.T) {
 func TestCategoryActivate(t *testing.T) {
 	name := "Drinks"
 	desc := "Drinks desc"
-	c := NewCategory(name, desc)
+	c := category.NewCategory(name, desc)
 	updatedAt := c.UpdatedAt
 
 	c.Deactivate()
@@ -61,7 +62,7 @@ func TestCategoryActivate(t *testing.T) {
 func TestCategoryUpdateToActive(t *testing.T) {
 	name := "new Drinks"
 	desc := "Drinks desc"
-	c := NewCategory("Drinks", "desc")
+	c := category.NewCategory("Drinks", "desc")
 	c.Deactivate()
 	updatedAt := c.UpdatedAt
 
@@ -102,7 +103,7 @@ func TestCategoryUpdateToActiveWithInvalidName(t *testing.T) {
 		},
 	}
 	for _, v := range tests {
-		c := NewCategory(v.name, "Drinks desc")
+		c := category.NewCategory(v.name, "Drinks desc")
 
 		n := notification.CreateNotification()
 
@@ -121,7 +122,7 @@ func TestCategoryUpdateToActiveWithInvalidName(t *testing.T) {
 func TestCategoryUpdateToNotActive(t *testing.T) {
 	name := "new Drinks"
 	desc := "Drinks desc"
-	c := NewCategory("Drinks", "desc")
+	c := category.NewCategory("Drinks", "desc")
 	updatedAt := c.UpdatedAt
 
 	assert.True(t, c.IsActive)

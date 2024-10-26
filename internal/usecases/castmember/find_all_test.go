@@ -1,17 +1,18 @@
-package castmember_usecase
+package castmember_usecase_test
 
 import (
 	"testing"
 
 	"github.com.br/gibranct/admin_do_catalogo/internal/domain"
 	"github.com.br/gibranct/admin_do_catalogo/internal/domain/castmember"
+	castmember_usecase "github.com.br/gibranct/admin_do_catalogo/internal/usecases/castmember"
 	"github.com.br/gibranct/admin_do_catalogo/pkg/mocks"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestFindAllCategories(t *testing.T) {
 	gatewayMock := new(mocks.CastMemberGatewayMock)
-	sut := DefaultListCastMembersUseCase{
+	sut := castmember_usecase.DefaultListCastMembersUseCase{
 		Gateway: gatewayMock,
 	}
 	query := domain.SearchQuery{
@@ -50,7 +51,7 @@ func TestFindAllCategories(t *testing.T) {
 
 func TestFindAllCategoriesWhenPageIsInvalid(t *testing.T) {
 	gatewayMock := new(mocks.CastMemberGatewayMock)
-	sut := DefaultListCastMembersUseCase{
+	sut := castmember_usecase.DefaultListCastMembersUseCase{
 		Gateway: gatewayMock,
 	}
 	tests := []struct {

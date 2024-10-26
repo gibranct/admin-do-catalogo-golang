@@ -49,7 +49,7 @@ func TestCreateVideo(t *testing.T) {
 		})
 		resp, err := http.Post(
 			fmt.Sprintf("%s/v1/videos", ts.URL),
-			"application/json",
+			conTypeApplicationJson,
 			bytes.NewBuffer(data),
 		)
 		expectedBody := `{"id":1}`

@@ -1,10 +1,11 @@
-package genre
+package genre_test
 
 import (
 	"strings"
 	"testing"
 	"time"
 
+	"github.com.br/gibranct/admin_do_catalogo/internal/domain/genre"
 	"github.com.br/gibranct/admin_do_catalogo/pkg/notification"
 	"github.com/stretchr/testify/assert"
 )
@@ -12,7 +13,7 @@ import (
 func TestGenreCreation(t *testing.T) {
 	name := "Drinks"
 	isActive := true
-	g := NewGenre(name)
+	g := genre.NewGenre(name)
 
 	n := notification.CreateNotification()
 
@@ -30,7 +31,7 @@ func TestGenreCreation(t *testing.T) {
 
 func TestGenreDeactivate(t *testing.T) {
 	name := "Drinks"
-	c := NewGenre(name)
+	c := genre.NewGenre(name)
 	updatedAt := c.UpdatedAt
 
 	time.Sleep(1 * time.Millisecond)
@@ -44,7 +45,7 @@ func TestGenreDeactivate(t *testing.T) {
 
 func TestGenreActivate(t *testing.T) {
 	name := "Drinks"
-	c := NewGenre(name)
+	c := genre.NewGenre(name)
 	updatedAt := c.UpdatedAt
 
 	c.Deactivate()
@@ -58,7 +59,7 @@ func TestGenreActivate(t *testing.T) {
 
 func TestGenreUpdateToActive(t *testing.T) {
 	name := "new Drinks"
-	c := NewGenre("Drinks")
+	c := genre.NewGenre("Drinks")
 	c.Deactivate()
 	updatedAt := c.UpdatedAt
 
@@ -98,7 +99,7 @@ func TestGenreUpdateToActiveWithInvalidName(t *testing.T) {
 		},
 	}
 	for _, v := range tests {
-		c := NewGenre(v.name)
+		c := genre.NewGenre(v.name)
 
 		n := notification.CreateNotification()
 
@@ -116,7 +117,7 @@ func TestGenreUpdateToActiveWithInvalidName(t *testing.T) {
 
 func TestGenreUpdateToNotActive(t *testing.T) {
 	name := "new Drinks"
-	c := NewGenre("Drinks")
+	c := genre.NewGenre("Drinks")
 	updatedAt := c.UpdatedAt
 
 	assert.True(t, c.IsActive)
@@ -139,7 +140,7 @@ func TestAddCategoryId(t *testing.T) {
 	cId4 := int64(45)
 	cId5 := int64(3)
 	cId6 := int64(2)
-	g := NewGenre("genre 1")
+	g := genre.NewGenre("genre 1")
 
 	assert.Equal(t, len(g.CategoryIds), 0)
 	assert.Equal(t, cap(g.CategoryIds), 5)
@@ -163,7 +164,7 @@ func TestAddCategoryIds(t *testing.T) {
 	cId5 := int64(3)
 	cId6 := int64(2)
 	ids := []int64{cId1, cId2, cId3, cId4, cId5, cId6}
-	g := NewGenre("genre 1")
+	g := genre.NewGenre("genre 1")
 
 	assert.Equal(t, len(g.CategoryIds), 0)
 	assert.Equal(t, cap(g.CategoryIds), 5)
@@ -182,7 +183,7 @@ func TestRemoveCategoryId(t *testing.T) {
 	cId5 := int64(3)
 	cId6 := int64(2)
 	ids := []int64{cId1, cId2, cId3, cId4, cId5, cId6}
-	g := NewGenre("genre 1")
+	g := genre.NewGenre("genre 1")
 
 	assert.Equal(t, len(g.CategoryIds), 0)
 	assert.Equal(t, cap(g.CategoryIds), 5)

@@ -107,7 +107,7 @@ func TestCreateCategory(t *testing.T) {
 		})
 		resp, err := http.Post(
 			fmt.Sprintf("%s/v1/categories", ts.URL),
-			"application/json",
+			conTypeApplicationJson,
 			bytes.NewBuffer(data),
 		)
 		expecBody := `{"id":1}`
@@ -125,7 +125,7 @@ func TestCreateCategory(t *testing.T) {
 		})
 		resp, err := http.Post(
 			fmt.Sprintf("%s/v1/categories", ts.URL),
-			"application/json",
+			conTypeApplicationJson,
 			bytes.NewBuffer(data),
 		)
 		expecBody := `{"errors":["'name' should not be empty","'name' must be between 3 and 255 characters"],"message":"Could not save category"}`
@@ -190,7 +190,7 @@ func TestDeactivateCategory(t *testing.T) {
 		_, output := app.useCases.Category.Create.Execute(command)
 		resp, err := http.Post(
 			fmt.Sprintf("%s/v1/categories/%d/deactivate", ts.URL, output.ID),
-			"application/json",
+			conTypeApplicationJson,
 			nil,
 		)
 		assert.Nil(t, err)
@@ -215,7 +215,7 @@ func TestActivateCategory(t *testing.T) {
 		_, output := app.useCases.Category.Create.Execute(command)
 		_, err := http.Post(
 			fmt.Sprintf("%s/v1/categories/%d/deactivate", ts.URL, output.ID),
-			"application/json",
+			conTypeApplicationJson,
 			nil,
 		)
 		assert.Nil(t, err)
@@ -224,7 +224,7 @@ func TestActivateCategory(t *testing.T) {
 		assert.False(t, out.IsActive)
 		resp, err := http.Post(
 			fmt.Sprintf("%s/v1/categories/%d/activate", ts.URL, output.ID),
-			"application/json",
+			conTypeApplicationJson,
 			nil,
 		)
 		assert.Nil(t, err)

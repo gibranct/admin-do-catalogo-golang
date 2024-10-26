@@ -13,6 +13,8 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+const conTypeApplicationJson = "application/json"
+
 func TestCreateCastMember(t *testing.T) {
 	t.Cleanup(cleanUp)
 	ts, _ := runTestServer()
@@ -25,7 +27,7 @@ func TestCreateCastMember(t *testing.T) {
 		})
 		resp, err := http.Post(
 			fmt.Sprintf("%s/v1/cast-members", ts.URL),
-			"application/json",
+			conTypeApplicationJson,
 			bytes.NewBuffer(data),
 		)
 		expecBody := `{"id":1}`
@@ -43,7 +45,7 @@ func TestCreateCastMember(t *testing.T) {
 		})
 		resp, err := http.Post(
 			fmt.Sprintf("%s/v1/cast-members", ts.URL),
-			"application/json",
+			conTypeApplicationJson,
 			bytes.NewBuffer(data),
 		)
 		expecBody := `{"errors":["'name' should not be empty","'name' must be between 3 and 255 characters"],"message":"Could not save cast member"}`
