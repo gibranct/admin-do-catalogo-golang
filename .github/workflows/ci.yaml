@@ -4,6 +4,10 @@ on:
     types: [opened, synchronize, reopened]
     branches:
       - develop
+  push:
+    branches:
+      - develop
+    
 jobs:
   build:
     runs-on: ubuntu-latest
