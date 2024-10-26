@@ -1,9 +1,10 @@
-package castmember_usecase
+package castmember_usecase_test
 
 import (
 	"testing"
 
 	"github.com.br/gibranct/admin_do_catalogo/internal/domain/castmember"
+	castmember_usecase "github.com.br/gibranct/admin_do_catalogo/internal/usecases/castmember"
 	"github.com.br/gibranct/admin_do_catalogo/pkg/mocks"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -11,10 +12,10 @@ import (
 
 func TestCreate(t *testing.T) {
 	gatewayMock := new(mocks.CastMemberGatewayMock)
-	useCase := &DefaultCreateCastMemberUseCase{
+	useCase := &castmember_usecase.DefaultCreateCastMemberUseCase{
 		Gateway: gatewayMock,
 	}
-	command := CreateCastMemberCommand{
+	command := castmember_usecase.CreateCastMemberCommand{
 		Name: "Keannu Reeves",
 		Type: castmember.ACTOR,
 	}
@@ -30,10 +31,10 @@ func TestCreate(t *testing.T) {
 
 func TestCreateWithEmptyName(t *testing.T) {
 	gatewayMock := new(mocks.CastMemberGatewayMock)
-	useCase := &DefaultCreateCastMemberUseCase{
+	useCase := &castmember_usecase.DefaultCreateCastMemberUseCase{
 		Gateway: gatewayMock,
 	}
-	command := CreateCastMemberCommand{
+	command := castmember_usecase.CreateCastMemberCommand{
 		Name: "",
 		Type: castmember.ACTOR,
 	}

@@ -1,18 +1,19 @@
-package castmember
+package castmember_test
 
 import (
 	"strings"
 	"testing"
 	"time"
 
+	"github.com.br/gibranct/admin_do_catalogo/internal/domain/castmember"
 	"github.com.br/gibranct/admin_do_catalogo/pkg/notification"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestCastMemberConstructor(t *testing.T) {
 	name := "John Brown"
-	aType := ACTOR
-	cm := NewCastMember(name, aType)
+	aType := castmember.ACTOR
+	cm := castmember.NewCastMember(name, aType)
 
 	assert.NotNil(t, cm)
 	assert.Equal(t, name, cm.Name)
@@ -23,8 +24,8 @@ func TestCastMemberConstructor(t *testing.T) {
 
 func TestCastMemberUpdate(t *testing.T) {
 	name := "John Brown"
-	aType := ACTOR
-	cm := NewCastMember("Kevin", DIRECTOR)
+	aType := castmember.ACTOR
+	cm := castmember.NewCastMember("Kevin", castmember.DIRECTOR)
 
 	updatedAt := cm.UpdatedAt
 	time.Sleep(time.Millisecond)
@@ -38,8 +39,8 @@ func TestCastMemberUpdate(t *testing.T) {
 }
 
 func TestCastMemberChangeType(t *testing.T) {
-	aType := ACTOR
-	cm := NewCastMember("Kevin", DIRECTOR)
+	aType := castmember.ACTOR
+	cm := castmember.NewCastMember("Kevin", castmember.DIRECTOR)
 
 	err := cm.ChangeType("actor")
 
@@ -50,8 +51,8 @@ func TestCastMemberChangeType(t *testing.T) {
 }
 
 func TestCastMemberChangeTypeWithUnknownType(t *testing.T) {
-	aType := DIRECTOR
-	cm := NewCastMember("Kevin", DIRECTOR)
+	aType := castmember.DIRECTOR
+	cm := castmember.NewCastMember("Kevin", castmember.DIRECTOR)
 
 	err := cm.ChangeType("publisher")
 
@@ -82,7 +83,7 @@ func TestCastMemberValidator(t *testing.T) {
 		},
 	}
 	for _, v := range tests {
-		c := NewCastMember(v.name, ACTOR)
+		c := castmember.NewCastMember(v.name, castmember.ACTOR)
 
 		n := notification.CreateNotification()
 
