@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com.br/gibranct/admin-do-catalogo/pkg/validator"
+	"github.com.br/gibranct/admin_do_catalogo/pkg/validator"
 )
 
 const nameMaxLength = 255

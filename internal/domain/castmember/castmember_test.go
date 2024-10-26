@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com.br/gibranct/admin-do-catalogo/pkg/notification"
+	"github.com.br/gibranct/admin_do_catalogo/pkg/notification"
 	"github.com/stretchr/testify/assert"
 )
 

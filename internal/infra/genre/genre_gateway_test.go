@@ -5,7 +5,7 @@ import (
 	"log"
 	"testing"
 
-	"github.com.br/gibranct/admin-do-catalogo/internal/domain/genre"
+	"github.com.br/gibranct/admin_do_catalogo/internal/domain/genre"
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/stretchr/testify/assert"
 

@@ -3,14 +3,14 @@ package usecase
 import (
 	"database/sql"
 
-	castmember "github.com.br/gibranct/admin-do-catalogo/internal/infra/castmember"
-	gateway "github.com.br/gibranct/admin-do-catalogo/internal/infra/category"
-	infra_genre "github.com.br/gibranct/admin-do-catalogo/internal/infra/genre"
-	infra_video "github.com.br/gibranct/admin-do-catalogo/internal/infra/video"
-	castmemberUsecase "github.com.br/gibranct/admin-do-catalogo/internal/usecases/castmember"
-	categoryUsecase "github.com.br/gibranct/admin-do-catalogo/internal/usecases/category"
-	genre_usecase "github.com.br/gibranct/admin-do-catalogo/internal/usecases/genre"
-	video_usecase "github.com.br/gibranct/admin-do-catalogo/internal/usecases/video"
+	castmember "github.com.br/gibranct/admin_do_catalogo/internal/infra/castmember"
+	gateway "github.com.br/gibranct/admin_do_catalogo/internal/infra/category"
+	infra_genre "github.com.br/gibranct/admin_do_catalogo/internal/infra/genre"
+	infra_video "github.com.br/gibranct/admin_do_catalogo/internal/infra/video"
+	castmemberUsecase "github.com.br/gibranct/admin_do_catalogo/internal/usecases/castmember"
+	categoryUsecase "github.com.br/gibranct/admin_do_catalogo/internal/usecases/category"
+	genre_usecase "github.com.br/gibranct/admin_do_catalogo/internal/usecases/genre"
+	video_usecase "github.com.br/gibranct/admin_do_catalogo/internal/usecases/video"
 )
 
 type CategoryUseCase struct {

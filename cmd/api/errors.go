@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com.br/gibranct/admin-do-catalogo/pkg/notification"
+	"github.com.br/gibranct/admin_do_catalogo/pkg/notification"
 )
 
 func (app *application) badRequestResponse(w http.ResponseWriter, err error) {

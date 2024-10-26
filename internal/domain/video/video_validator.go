@@ -3,7 +3,7 @@ package video
 import (
 	"errors"
 
-	"github.com.br/gibranct/admin-do-catalogo/pkg/validator"
+	"github.com.br/gibranct/admin_do_catalogo/pkg/validator"
 )
 
 type VideoValidator struct {

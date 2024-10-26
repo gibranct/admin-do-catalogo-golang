@@ -1,8 +1,8 @@
 package mocks
 
 import (
-	"github.com.br/gibranct/admin-do-catalogo/internal/domain"
-	"github.com.br/gibranct/admin-do-catalogo/internal/domain/castmember"
+	"github.com.br/gibranct/admin_do_catalogo/internal/domain"
+	"github.com.br/gibranct/admin_do_catalogo/internal/domain/castmember"
 	"github.com/stretchr/testify/mock"
 )
 

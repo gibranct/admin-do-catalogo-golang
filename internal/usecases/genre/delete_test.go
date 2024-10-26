@@ -4,7 +4,7 @@ import (
 	"errors"
 	"testing"
 
-	"github.com.br/gibranct/admin-do-catalogo/pkg/mocks"
+	"github.com.br/gibranct/admin_do_catalogo/pkg/mocks"
 	"github.com/stretchr/testify/assert"
 )
 

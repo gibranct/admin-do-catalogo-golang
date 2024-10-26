@@ -1,8 +1,8 @@
 package category_usecase
 
 import (
-	"github.com.br/gibranct/admin-do-catalogo/internal/domain/category"
-	"github.com.br/gibranct/admin-do-catalogo/pkg/notification"
+	"github.com.br/gibranct/admin_do_catalogo/internal/domain/category"
+	"github.com.br/gibranct/admin_do_catalogo/pkg/notification"
 )
 
 type CreateCategoryOutput struct {

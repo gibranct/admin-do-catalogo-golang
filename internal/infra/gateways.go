@@ -3,10 +3,10 @@ package gateway
 import (
 	"database/sql"
 
-	infra_castmember "github.com.br/gibranct/admin-do-catalogo/internal/infra/castmember"
-	infra_category "github.com.br/gibranct/admin-do-catalogo/internal/infra/category"
-	infra_genre "github.com.br/gibranct/admin-do-catalogo/internal/infra/genre"
-	infra_video "github.com.br/gibranct/admin-do-catalogo/internal/infra/video"
+	infra_castmember "github.com.br/gibranct/admin_do_catalogo/internal/infra/castmember"
+	infra_category "github.com.br/gibranct/admin_do_catalogo/internal/infra/category"
+	infra_genre "github.com.br/gibranct/admin_do_catalogo/internal/infra/genre"
+	infra_video "github.com.br/gibranct/admin_do_catalogo/internal/infra/video"
 )
 
 type Gateways struct {

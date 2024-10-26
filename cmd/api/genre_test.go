@@ -7,9 +7,9 @@ import (
 	"net/http"
 	"testing"
 
-	category_usecase "github.com.br/gibranct/admin-do-catalogo/internal/usecases/category"
-	genre_usecase "github.com.br/gibranct/admin-do-catalogo/internal/usecases/genre"
-	"github.com.br/gibranct/admin-do-catalogo/pkg/test"
+	category_usecase "github.com.br/gibranct/admin_do_catalogo/internal/usecases/category"
+	genre_usecase "github.com.br/gibranct/admin_do_catalogo/internal/usecases/genre"
+	"github.com.br/gibranct/admin_do_catalogo/pkg/test"
 	"github.com/stretchr/testify/assert"
 )
 

@@ -1,6 +1,6 @@
 package notification
 
-import "github.com.br/gibranct/admin-do-catalogo/pkg/validator"
+import "github.com.br/gibranct/admin_do_catalogo/pkg/validator"
 
 type Notification struct {
 	errors []error

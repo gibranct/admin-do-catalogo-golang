@@ -1,7 +1,7 @@
 package mocks
 
 import (
-	"github.com.br/gibranct/admin-do-catalogo/internal/domain/video"
+	"github.com.br/gibranct/admin_do_catalogo/internal/domain/video"
 	"github.com/stretchr/testify/mock"
 )
 
