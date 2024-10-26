@@ -1,21 +1,27 @@
-name: ci-golang-workflow
+name: ci
 on:
   pull_request:
+    types: [opened, synchronize, reopened]
     branches:
       - develop
 jobs:
   check-application:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        go: ['1.22', '1.23']
 
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-go@v2
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v4
         with:
-          go-version: ${{ matrix.go }}
+          go-version: 1.22
+
+        name: All tests
       - run: go test ./...
+
+        name: Generating test report  
+      - run: go test ./... -json > test-report.out
+
+        name: Generating test coverage report  
+      - run: go test ./... -coverprofile=coverage.out
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
@@ -35,3 +41,10 @@ jobs:
         with:
           push: false
           tags: gibran/admin-catalog:latest
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    
