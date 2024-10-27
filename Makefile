@@ -61,7 +61,7 @@ vendor:
 # BUILD
 # =============================================================================================================================== #
 .PHONY: build/api
-build/api: audit
+build/api:
 	@echo 'Building cmd/api...'
 	go build -ldflags='-s -w -X main.version=${VERSION}' -o=./bin/api ./cmd/api
 	
