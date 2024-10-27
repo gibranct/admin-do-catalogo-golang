@@ -11,6 +11,7 @@ build:
 
 test: build
 	go test ./... -coverprofile=bin/cov.out
+	go test ./... -json > bin/report.json
 
 clean:
 	rm -rf ./bin
