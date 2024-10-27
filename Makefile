@@ -1,23 +1,67 @@
-.PHONY: default
-default: build
+# =============================================================================================================================== #
+# HELPERS
+# =============================================================================================================================== #
 
-all: clean get-deps build test
+## help: print this help message
+.PHONY: help
+help:
+	@echo 'Usage:'
+	@sed -n 's/^##//p' ${MAKEFILE_LIST} | column -t -s ':' | sed -e 's/^/ /'
 
-version := "0.1.0"
+.PHONY: confirm
+confirm:
+	@echo 'Are you sure? [y/N]' && read ans && [ $${ans:-N} = y ]
 
-build:
-	mkdir -p bin
-	go build -o=bin/api ./cmd/api
 
-test: build
-	go test ./... -coverprofile=bin/cov.out
-	go test ./... -json > bin/report.json
+# =============================================================================================================================== #
+# DEVELOPMENT
+# =============================================================================================================================== #
+## run/api: run the cmd/api application
+.PHONY: run/api
+run/api:
+	@go run ./cmd/api -db-dsn=${DB_DSN}
 
-clean:
-	rm -rf ./bin
+## db/migrations/new name=$1: create a new database migration
+.PHONY: db/migrations/new
+db/migrations/new:
+	@echo 'Creating migration files for ${name}...'
+	migrate create -seq -ext=.sql -dir=./migrations ${name}
 
-sonar: test
-	sonar-scanner -Dsonar.projectVersion="$(version)"
+## db/migrations/up: apply all up database migrations
+.PHONY: db/migrations/up
+db/migrations/up: confirm
+	@echo 'Running up migrations...'
+	migrate -path ./migrations -database ${DB_DSN} up
 
-start-sonar:
-	docker run --name sonarqube -p 9000:9000 sonarqube
+# =============================================================================================================================== #
+# QUALITY CONTROL
+# =============================================================================================================================== #
+
+## audit: tidy dependencies and format, vet and test all code
+.PHONY: audit
+audit: vendor
+	@echo 'Formatting code...'
+	go fmt ./...
+	@echo 'Vetting code...'
+	go vet ./...
+	@echo 'Running tests...'
+	go test ./... -coverprofile=coverage.out
+	go test ./... -json > report.json
+
+## vendor: tidy and vendor dependencies
+.PHONY: vendor
+vendor:
+	@echo 'Tidying and verifying module dependencies'
+	go mod tidy
+	go mod verify
+	@echo 'Vendoring dependencies'
+	go mod vendor
+
+# =============================================================================================================================== #
+# BUILD
+# =============================================================================================================================== #
+.PHONY: build/api
+build/api: audit
+	@echo 'Building cmd/api...'
+	go build -ldflags='-s -w -X main.version=${VERSION}' -o=./bin/api ./cmd/api
+	
