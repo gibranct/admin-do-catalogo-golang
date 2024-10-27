@@ -45,8 +45,8 @@ audit: vendor
 	@echo 'Vetting code...'
 	go vet ./...
 	@echo 'Running tests...'
-	go test ./... -coverprofile=coverage.out
-	go test ./... -json > report.json
+	go test ./... -coverprofile=bin/coverage.out
+	go test ./... -json > bin/report.json
 
 ## vendor: tidy and vendor dependencies
 .PHONY: vendor
