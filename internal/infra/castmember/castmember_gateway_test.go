@@ -1,4 +1,4 @@
-package infra_castmember
+package infra_castmember_test
 
 import (
 	"errors"
@@ -7,6 +7,7 @@ import (
 
 	"github.com.br/gibranct/admin_do_catalogo/internal/domain"
 	"github.com.br/gibranct/admin_do_catalogo/internal/domain/castmember"
+	infra_castmember "github.com.br/gibranct/admin_do_catalogo/internal/infra/castmember"
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/stretchr/testify/assert"
 
@@ -19,7 +20,7 @@ func TestCreateCastMember(t *testing.T) {
 		log.Fatalf("Failed to create DB connection: %s", err)
 	}
 	defer db.Close()
-	cg := NewCastMemberGateway(db)
+	cg := infra_castmember.NewCastMemberGateway(db)
 	c := castmember.NewCastMember("John Doe", castmember.ACTOR)
 	query := "INSERT INTO cast_members"
 	mock.ExpectQuery(query).WithArgs(
@@ -41,7 +42,7 @@ func TestCreateCastMemberWhenFails(t *testing.T) {
 		log.Fatalf("Failed to create DB connection: %s", err)
 	}
 	defer db.Close()
-	cg := NewCastMemberGateway(db)
+	cg := infra_castmember.NewCastMemberGateway(db)
 	c := castmember.NewCastMember("John Doe", castmember.DIRECTOR)
 	query := "INSERT INTO cast_members"
 	expectedError := errors.New("failed to create cast member")
@@ -62,7 +63,7 @@ func TestFindById(t *testing.T) {
 		log.Fatalf("Failed to create DB connection: %s", err)
 	}
 	defer db.Close()
-	cg := NewCastMemberGateway(db)
+	cg := infra_castmember.NewCastMemberGateway(db)
 	c := castmember.NewCastMember("John Doe", castmember.DIRECTOR)
 	c.ID = 45
 	rows := sqlmock.NewRows([]string{"1", "2", "3", "4", "5"})
@@ -90,7 +91,7 @@ func TestFindByIdWhenFails(t *testing.T) {
 		log.Fatalf("Failed to create DB connection: %s", err)
 	}
 	defer db.Close()
-	cg := NewCastMemberGateway(db)
+	cg := infra_castmember.NewCastMemberGateway(db)
 	castMember := castmember.NewCastMember("John Doe", castmember.DIRECTOR)
 	castMember.ID = 45
 	expectedError := errors.New("faild to find cast member")
@@ -110,7 +111,7 @@ func TestUpdate(t *testing.T) {
 		log.Fatalf("Failed to create DB connection: %s", err)
 	}
 	defer db.Close()
-	cg := NewCastMemberGateway(db)
+	cg := infra_castmember.NewCastMemberGateway(db)
 	c := castmember.NewCastMember("John Doe", castmember.ACTOR)
 	mock.ExpectExec("UPDATE cast_members").
 		WithArgs(c.Name, c.Type.String(), c.UpdatedAt, c.ID).
@@ -129,7 +130,7 @@ func TestUpdateWhenFails(t *testing.T) {
 		log.Fatalf("Failed to create DB connection: %s", err)
 	}
 	defer db.Close()
-	cg := NewCastMemberGateway(db)
+	cg := infra_castmember.NewCastMemberGateway(db)
 	c := castmember.NewCastMember("John Doe", castmember.ACTOR)
 	expectedError := errors.New("failed to update category")
 	mock.ExpectExec("UPDATE cast_members").
@@ -175,7 +176,7 @@ func TestFindAllWithFilters(t *testing.T) {
 		},
 		isLast: false,
 	}
-	cg := NewCastMemberGateway(db)
+	cg := infra_castmember.NewCastMemberGateway(db)
 	rows := sqlmock.NewRows([]string{"1", "2", "3", "4", "5", "6"})
 	rows.AddRow(
 		totalRecords,
@@ -247,7 +248,7 @@ func TestFindAllWhenIsLastPage(t *testing.T) {
 		},
 		isLast: true,
 	}
-	cg := NewCastMemberGateway(db)
+	cg := infra_castmember.NewCastMemberGateway(db)
 	rows := sqlmock.NewRows([]string{"1", "2", "3", "4", "5", "6"})
 	rows.AddRow(
 		totalRecords,
@@ -294,7 +295,7 @@ func TestExistsByIds(t *testing.T) {
 		log.Fatalf("Failed to create DB connection: %s", err)
 	}
 	defer db.Close()
-	cg := NewCastMemberGateway(db)
+	cg := infra_castmember.NewCastMemberGateway(db)
 	castMember1 := castmember.NewCastMember("John Doe 1", castmember.ACTOR)
 	castMember2 := castmember.NewCastMember("John Doe 2", castmember.ACTOR)
 	castMember3 := castmember.NewCastMember("John Doe 3", castmember.ACTOR)
