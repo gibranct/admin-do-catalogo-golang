@@ -1,16 +1,17 @@
-package genre_usecase
+package genre_usecase_test
 
 import (
 	"errors"
 	"testing"
 
+	genre_usecase "github.com.br/gibranct/admin_do_catalogo/internal/usecases/genre"
 	"github.com.br/gibranct/admin_do_catalogo/pkg/mocks"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestDeleteGenreById(t *testing.T) {
 	genreGatewayMock := new(mocks.GenreGatewayMock)
-	sut := DefaultDeleteGenreUseCase{
+	sut := genre_usecase.DefaultDeleteGenreUseCase{
 		Gateway: genreGatewayMock,
 	}
 	genreId := int64(45)
@@ -24,7 +25,7 @@ func TestDeleteGenreById(t *testing.T) {
 
 func TestDeleteGenreByIdWhenFails(t *testing.T) {
 	genreGatewayMock := new(mocks.GenreGatewayMock)
-	sut := DefaultDeleteGenreUseCase{
+	sut := genre_usecase.DefaultDeleteGenreUseCase{
 		Gateway: genreGatewayMock,
 	}
 	genreId := int64(45)

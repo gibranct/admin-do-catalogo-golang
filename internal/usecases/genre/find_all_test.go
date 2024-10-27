@@ -1,16 +1,17 @@
-package genre_usecase
+package genre_usecase_test
 
 import (
 	"testing"
 
 	"github.com.br/gibranct/admin_do_catalogo/internal/domain/genre"
+	genre_usecase "github.com.br/gibranct/admin_do_catalogo/internal/usecases/genre"
 	"github.com.br/gibranct/admin_do_catalogo/pkg/mocks"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestFindAllGenres(t *testing.T) {
 	gatewayMock := new(mocks.GenreGatewayMock)
-	sut := DefaultListGenresUseCase{
+	sut := genre_usecase.DefaultListGenresUseCase{
 		Gateway: gatewayMock,
 	}
 	genres := []*genre.Genre{

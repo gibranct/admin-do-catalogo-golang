@@ -43,7 +43,7 @@ func (useCase DefaultCreateGenreUseCase) Execute(
 		return n, nil
 	}
 
-	err := useCase.validateCategories(*command.CategoryIds)
+	err := useCase.ValidateCategories(*command.CategoryIds)
 
 	if err != nil {
 		n.Add(err)
@@ -63,7 +63,7 @@ func (useCase DefaultCreateGenreUseCase) Execute(
 	}
 }
 
-func (useCase DefaultCreateGenreUseCase) validateCategories(categoriesIds []int64) error {
+func (useCase DefaultCreateGenreUseCase) ValidateCategories(categoriesIds []int64) error {
 	if len(categoriesIds) == 0 {
 		return nil
 	}
