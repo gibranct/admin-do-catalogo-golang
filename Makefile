@@ -45,6 +45,7 @@ audit: vendor
 	@echo 'Vetting code...'
 	go vet ./...
 	@echo 'Running tests...'
+	mkdir -p bin
 	go test ./... -coverprofile=bin/coverage.out
 
 ## vendor: tidy and vendor dependencies
