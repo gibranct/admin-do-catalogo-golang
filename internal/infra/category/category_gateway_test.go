@@ -1,4 +1,4 @@
-package infra_category
+package infra_category_test
 
 import (
 	"errors"
@@ -7,6 +7,7 @@ import (
 
 	"github.com.br/gibranct/admin_do_catalogo/internal/domain"
 	"github.com.br/gibranct/admin_do_catalogo/internal/domain/category"
+	infra_category "github.com.br/gibranct/admin_do_catalogo/internal/infra/category"
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/stretchr/testify/assert"
 
@@ -19,7 +20,7 @@ func TestCreateCategory(t *testing.T) {
 		log.Fatalf("Failed to create DB connection: %s", err)
 	}
 	defer db.Close()
-	cg := NewCategoryGateway(db)
+	cg := infra_category.NewCategoryGateway(db)
 	c := category.NewCategory("drinks", "drinks desc")
 	query := "INSERT INTO categories"
 	mock.ExpectQuery(query).WithArgs(
@@ -41,7 +42,7 @@ func TestCreateCategoryWhenFails(t *testing.T) {
 		log.Fatalf("Failed to create DB connection: %s", err)
 	}
 	defer db.Close()
-	cg := NewCategoryGateway(db)
+	cg := infra_category.NewCategoryGateway(db)
 	c := category.NewCategory("drinks", "drinks desc")
 	query := "INSERT INTO categories"
 	expectedError := errors.New("failed to create category")
@@ -62,7 +63,7 @@ func TestFindById(t *testing.T) {
 		log.Fatalf("Failed to create DB connection: %s", err)
 	}
 	defer db.Close()
-	cg := NewCategoryGateway(db)
+	cg := infra_category.NewCategoryGateway(db)
 	category := category.NewCategory("drinks", "drinks desc")
 	category.ID = 45
 	rows := sqlmock.NewRows([]string{"1", "2", "3", "4", "5", "6", "7"})
@@ -93,7 +94,7 @@ func TestFindByIdWhenFails(t *testing.T) {
 		log.Fatalf("Failed to create DB connection: %s", err)
 	}
 	defer db.Close()
-	cg := NewCategoryGateway(db)
+	cg := infra_category.NewCategoryGateway(db)
 	category := category.NewCategory("drinks", "drinks desc")
 	category.ID = 45
 	expectedError := errors.New("faild to find category")
@@ -113,7 +114,7 @@ func TestUpdate(t *testing.T) {
 		log.Fatalf("Failed to create DB connection: %s", err)
 	}
 	defer db.Close()
-	cg := NewCategoryGateway(db)
+	cg := infra_category.NewCategoryGateway(db)
 	c := category.NewCategory("drinks", "drinks desc")
 	mock.ExpectExec("UPDATE categories").
 		WithArgs(c.Name, c.Description, c.IsActive, c.UpdatedAt, c.DeletedAt, c.ID).
@@ -132,7 +133,7 @@ func TestUpdateWhenFails(t *testing.T) {
 		log.Fatalf("Failed to create DB connection: %s", err)
 	}
 	defer db.Close()
-	cg := NewCategoryGateway(db)
+	cg := infra_category.NewCategoryGateway(db)
 	c := category.NewCategory("drinks", "drinks desc")
 	expectedError := errors.New("failed to update category")
 	mock.ExpectExec("UPDATE categories").
@@ -178,7 +179,7 @@ func TestFindAllWithFilters(t *testing.T) {
 		},
 		isLast: false,
 	}
-	cg := NewCategoryGateway(db)
+	cg := infra_category.NewCategoryGateway(db)
 	rows := sqlmock.NewRows([]string{"1", "2", "3", "4", "5", "6", "7", "8"})
 	rows.AddRow(
 		totalRecords,
@@ -256,7 +257,7 @@ func TestFindAllWhenIsLastPage(t *testing.T) {
 		},
 		isLast: true,
 	}
-	cg := NewCategoryGateway(db)
+	cg := infra_category.NewCategoryGateway(db)
 	rows := sqlmock.NewRows([]string{"1", "2", "3", "4", "5", "6", "7", "8"})
 	rows.AddRow(
 		totalRecords,
@@ -309,7 +310,7 @@ func TestExistsByIds(t *testing.T) {
 		log.Fatalf("Failed to create DB connection: %s", err)
 	}
 	defer db.Close()
-	cg := NewCategoryGateway(db)
+	cg := infra_category.NewCategoryGateway(db)
 	category1 := category.NewCategory("movie", "drinks desc")
 	category2 := category.NewCategory("tv show", "drinks desc")
 	category3 := category.NewCategory("documentary", "drinks desc")

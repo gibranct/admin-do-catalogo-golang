@@ -1,4 +1,4 @@
-package infra_genre
+package infra_genre_test
 
 import (
 	"errors"
@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com.br/gibranct/admin_do_catalogo/internal/domain/genre"
+	infra_genre "github.com.br/gibranct/admin_do_catalogo/internal/infra/genre"
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/stretchr/testify/assert"
 
@@ -18,7 +19,7 @@ func TestCreateGenre(t *testing.T) {
 		log.Fatalf("Failed to create DB connection: %s", err)
 	}
 	defer db.Close()
-	cg := NewGenreGateway(db)
+	cg := infra_genre.NewGenreGateway(db)
 	g := genre.NewGenre("drinks")
 	categoryId := int64(55)
 	g.AddCategoryId(categoryId)
@@ -48,7 +49,7 @@ func TestCreateCategoryWhenFails(t *testing.T) {
 		log.Fatalf("Failed to create DB connection: %s", err)
 	}
 	defer db.Close()
-	gg := NewGenreGateway(db)
+	gg := infra_genre.NewGenreGateway(db)
 	g := genre.NewGenre("drinks")
 
 	query := "INSERT INTO genres"
@@ -83,7 +84,7 @@ func TestFindAllGenres(t *testing.T) {
 	categoryId3 := int64(2)
 	genre3.ID = int64(3)
 
-	gg := NewGenreGateway(db)
+	gg := infra_genre.NewGenreGateway(db)
 	rows := sqlmock.NewRows([]string{"1", "2", "3", "4", "5", "6", "7"})
 	rows.AddRow(
 		genre1.ID,
@@ -129,7 +130,7 @@ func TestExistsByIds(t *testing.T) {
 		log.Fatalf("Failed to create DB connection: %s", err)
 	}
 	defer db.Close()
-	gg := NewGenreGateway(db)
+	gg := infra_genre.NewGenreGateway(db)
 	genre1 := genre.NewGenre("movie")
 	genre2 := genre.NewGenre("tv show")
 	genre3 := genre.NewGenre("documentary")
@@ -156,7 +157,7 @@ func TestDeleteGenre(t *testing.T) {
 		log.Fatalf("Failed to create DB connection: %s", err)
 	}
 	defer db.Close()
-	gg := NewGenreGateway(db)
+	gg := infra_genre.NewGenreGateway(db)
 	genreId := int64(56)
 
 	mock.ExpectExec("DELETE").WithArgs(genreId).WillReturnResult(sqlmock.NewResult(int64(1), 1))
@@ -172,7 +173,7 @@ func TestDeleteGenreWhenFails(t *testing.T) {
 		log.Fatalf("Failed to create DB connection: %s", err)
 	}
 	defer db.Close()
-	gg := NewGenreGateway(db)
+	gg := infra_genre.NewGenreGateway(db)
 	genreId := int64(56)
 	erro := errors.New("failed to delete genre")
 
