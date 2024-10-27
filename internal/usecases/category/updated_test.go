@@ -1,10 +1,11 @@
-package category_usecase
+package category_usecase_test
 
 import (
 	"errors"
 	"testing"
 
 	"github.com.br/gibranct/admin_do_catalogo/internal/domain/category"
+	category_usecase "github.com.br/gibranct/admin_do_catalogo/internal/usecases/category"
 	"github.com.br/gibranct/admin_do_catalogo/pkg/mocks"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -12,10 +13,10 @@ import (
 
 func TestCategoryUpdateUseCase(t *testing.T) {
 	gatewayMock := new(mocks.CategoryGatewayMock)
-	useCase := DefaultUpdateCategoryUseCase{
+	useCase := category_usecase.DefaultUpdateCategoryUseCase{
 		Gateway: gatewayMock,
 	}
-	command := UpdateCategoryCommand{
+	command := category_usecase.UpdateCategoryCommand{
 		ID:          56,
 		Name:        "Drinks",
 		Description: "All cool drinks",
@@ -35,10 +36,10 @@ func TestCategoryUpdateUseCase(t *testing.T) {
 
 func TestCategoryUpdateUseCaseWhenCategoryIsNotFound(t *testing.T) {
 	gatewayMock := new(mocks.CategoryGatewayMock)
-	useCase := DefaultUpdateCategoryUseCase{
+	useCase := category_usecase.DefaultUpdateCategoryUseCase{
 		Gateway: gatewayMock,
 	}
-	command := UpdateCategoryCommand{
+	command := category_usecase.UpdateCategoryCommand{
 		ID:          56,
 		Name:        "Drinks",
 		Description: "All cool drinks",
@@ -60,10 +61,10 @@ func TestCategoryUpdateUseCaseWhenCategoryIsNotFound(t *testing.T) {
 
 func TestCategoryUpdateWithEmptyName(t *testing.T) {
 	gatewayMock := new(mocks.CategoryGatewayMock)
-	useCase := DefaultUpdateCategoryUseCase{
+	useCase := category_usecase.DefaultUpdateCategoryUseCase{
 		Gateway: gatewayMock,
 	}
-	command := UpdateCategoryCommand{
+	command := category_usecase.UpdateCategoryCommand{
 		ID:          56,
 		Name:        "",
 		Description: "All cool drinks",

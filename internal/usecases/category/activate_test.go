@@ -1,4 +1,4 @@
-package category_usecase
+package category_usecase_test
 
 import (
 	"errors"
@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com.br/gibranct/admin_do_catalogo/internal/domain/category"
+	category_usecase "github.com.br/gibranct/admin_do_catalogo/internal/usecases/category"
 	"github.com.br/gibranct/admin_do_catalogo/pkg/mocks"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -13,7 +14,7 @@ import (
 
 func TestActivateCategoryUseCase(t *testing.T) {
 	gatewayMock := new(mocks.CategoryGatewayMock)
-	useCase := DefaultActivateCategoryUseCase{
+	useCase := category_usecase.DefaultActivateCategoryUseCase{
 		Gateway: gatewayMock,
 	}
 	var expectedId int64 = 4545
@@ -41,7 +42,7 @@ func TestActivateCategoryUseCase(t *testing.T) {
 
 func TestActivateCategoryUseCaseFails(t *testing.T) {
 	gatewayMock := new(mocks.CategoryGatewayMock)
-	useCase := DefaultActivateCategoryUseCase{
+	useCase := category_usecase.DefaultActivateCategoryUseCase{
 		Gateway: gatewayMock,
 	}
 	var expectedId int64 = 4545

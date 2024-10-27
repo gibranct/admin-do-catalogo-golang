@@ -1,10 +1,11 @@
-package castmember_usecase
+package castmember_usecase_test
 
 import (
 	"errors"
 	"testing"
 
 	"github.com.br/gibranct/admin_do_catalogo/internal/domain/castmember"
+	castmember_usecase "github.com.br/gibranct/admin_do_catalogo/internal/usecases/castmember"
 	"github.com.br/gibranct/admin_do_catalogo/pkg/mocks"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -12,10 +13,10 @@ import (
 
 func TestCategoryUpdateUseCase(t *testing.T) {
 	gatewayMock := new(mocks.CastMemberGatewayMock)
-	useCase := DefaultUpdateCastMemberUseCase{
+	useCase := castmember_usecase.DefaultUpdateCastMemberUseCase{
 		Gateway: gatewayMock,
 	}
-	command := UpdateCastMemberCommand{
+	command := castmember_usecase.UpdateCastMemberCommand{
 		ID:   56,
 		Name: "John Doe",
 		Type: "actor",
@@ -36,10 +37,10 @@ func TestCategoryUpdateUseCase(t *testing.T) {
 
 func TestUpdateCastMemberUseCaseWhenCastMemberIsNotFound(t *testing.T) {
 	gatewayMock := new(mocks.CastMemberGatewayMock)
-	useCase := DefaultUpdateCastMemberUseCase{
+	useCase := castmember_usecase.DefaultUpdateCastMemberUseCase{
 		Gateway: gatewayMock,
 	}
-	command := UpdateCastMemberCommand{
+	command := castmember_usecase.UpdateCastMemberCommand{
 		ID:   56,
 		Name: "John Doe",
 		Type: "actor",
@@ -63,10 +64,10 @@ func TestUpdateCastMemberUseCaseWhenCastMemberIsNotFound(t *testing.T) {
 
 func TestCategoryUpdateWithEmptyName(t *testing.T) {
 	gatewayMock := new(mocks.CastMemberGatewayMock)
-	useCase := DefaultUpdateCastMemberUseCase{
+	useCase := castmember_usecase.DefaultUpdateCastMemberUseCase{
 		Gateway: gatewayMock,
 	}
-	command := UpdateCastMemberCommand{
+	command := castmember_usecase.UpdateCastMemberCommand{
 		ID:   56,
 		Name: "",
 		Type: "actor",

@@ -1,4 +1,4 @@
-package category_usecase
+package category_usecase_test
 
 import (
 	"errors"
@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com.br/gibranct/admin_do_catalogo/internal/domain/category"
+	category_usecase "github.com.br/gibranct/admin_do_catalogo/internal/usecases/category"
 	"github.com.br/gibranct/admin_do_catalogo/pkg/mocks"
 	"github.com/stretchr/testify/assert"
 )
@@ -14,7 +15,7 @@ func TestFindCategoryByIdUseCase(t *testing.T) {
 	categoryId := int64(54545)
 	categoryGatewayMock := &mocks.CategoryGatewayMock{}
 
-	sut := DefaultGetCategoryByIdUseCase{
+	sut := category_usecase.DefaultGetCategoryByIdUseCase{
 		Gateway: categoryGatewayMock,
 	}
 	cate := &category.Category{
@@ -44,7 +45,7 @@ func TestFailToFindCategoryById(t *testing.T) {
 	categoryId := int64(54)
 	categoryGatewayMock := &mocks.CategoryGatewayMock{}
 
-	sut := DefaultGetCategoryByIdUseCase{
+	sut := category_usecase.DefaultGetCategoryByIdUseCase{
 		Gateway: categoryGatewayMock,
 	}
 	expectedErrMsg := "Could not find category for id: 54"

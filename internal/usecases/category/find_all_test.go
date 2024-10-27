@@ -1,17 +1,18 @@
-package category_usecase
+package category_usecase_test
 
 import (
 	"testing"
 
 	"github.com.br/gibranct/admin_do_catalogo/internal/domain"
 	"github.com.br/gibranct/admin_do_catalogo/internal/domain/category"
+	category_usecase "github.com.br/gibranct/admin_do_catalogo/internal/usecases/category"
 	"github.com.br/gibranct/admin_do_catalogo/pkg/mocks"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestFindAllCategories(t *testing.T) {
 	gatewayMock := new(mocks.CategoryGatewayMock)
-	sut := DefaultListCategoriesUseCase{
+	sut := category_usecase.DefaultListCategoriesUseCase{
 		Gateway: gatewayMock,
 	}
 	query := domain.SearchQuery{
@@ -50,7 +51,7 @@ func TestFindAllCategories(t *testing.T) {
 
 func TestFindAllCategoriesWhenPageIsInvalid(t *testing.T) {
 	gatewayMock := new(mocks.CategoryGatewayMock)
-	sut := DefaultListCategoriesUseCase{
+	sut := category_usecase.DefaultListCategoriesUseCase{
 		Gateway: gatewayMock,
 	}
 	tests := []struct {

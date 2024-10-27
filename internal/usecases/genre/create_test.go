@@ -1,10 +1,11 @@
-package genre_usecase
+package genre_usecase_test
 
 import (
 	"errors"
 	"testing"
 
 	"github.com.br/gibranct/admin_do_catalogo/internal/domain/genre"
+	genre_usecase "github.com.br/gibranct/admin_do_catalogo/internal/usecases/genre"
 	"github.com.br/gibranct/admin_do_catalogo/pkg/mocks"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -13,12 +14,12 @@ import (
 func TestGenreCreationUseCase(t *testing.T) {
 	gatewayMock := new(mocks.GenreGatewayMock)
 	categoryGatewayMock := new(mocks.CategoryGatewayMock)
-	useCase := DefaultCreateGenreUseCase{
+	useCase := genre_usecase.DefaultCreateGenreUseCase{
 		Gateway:         gatewayMock,
 		CategoryGateway: categoryGatewayMock,
 	}
 	categoryIds := []int64{45, 59, 78}
-	command := CreateGenreCommand{
+	command := genre_usecase.CreateGenreCommand{
 		Name:        "Drinks",
 		CategoryIds: &categoryIds,
 	}
@@ -40,12 +41,12 @@ func TestGenreCreationUseCase(t *testing.T) {
 func TestGenreCreationUseCaseWhenCategoryIsNotFound(t *testing.T) {
 	gatewayMock := new(mocks.GenreGatewayMock)
 	categoryGatewayMock := new(mocks.CategoryGatewayMock)
-	useCase := DefaultCreateGenreUseCase{
+	useCase := genre_usecase.DefaultCreateGenreUseCase{
 		Gateway:         gatewayMock,
 		CategoryGateway: categoryGatewayMock,
 	}
 	categoryIds := []int64{45, 59, 78}
-	command := CreateGenreCommand{
+	command := genre_usecase.CreateGenreCommand{
 		Name:        "Drinks",
 		CategoryIds: &categoryIds,
 	}
@@ -65,13 +66,13 @@ func TestGenreCreationUseCaseWhenCategoryIsNotFound(t *testing.T) {
 func TestValidateCategoriesIds(t *testing.T) {
 	categoryGatewayMock := new(mocks.CategoryGatewayMock)
 	categoryIds := []int64{45, 59, 78}
-	useCase := DefaultCreateGenreUseCase{
+	useCase := genre_usecase.DefaultCreateGenreUseCase{
 		CategoryGateway: categoryGatewayMock,
 	}
 
 	categoryGatewayMock.On("ExistsByIds", categoryIds).Return(categoryIds, nil)
 
-	err := useCase.validateCategories(categoryIds)
+	err := useCase.ValidateCategories(categoryIds)
 
 	assert.Nil(t, err)
 }
@@ -79,13 +80,13 @@ func TestValidateCategoriesIds(t *testing.T) {
 func TestValidateCategoriesIdsDoesFindAllIds(t *testing.T) {
 	categoryGatewayMock := new(mocks.CategoryGatewayMock)
 	categoryIds := []int64{45, 59, 78}
-	useCase := DefaultCreateGenreUseCase{
+	useCase := genre_usecase.DefaultCreateGenreUseCase{
 		CategoryGateway: categoryGatewayMock,
 	}
 
 	categoryGatewayMock.On("ExistsByIds", categoryIds).Return([]int64{45, 59}, nil)
 
-	err := useCase.validateCategories(categoryIds)
+	err := useCase.ValidateCategories(categoryIds)
 
 	assert.NotNil(t, err)
 	assert.Equal(t, "missing category ids: 78", err.Error())
@@ -93,10 +94,10 @@ func TestValidateCategoriesIdsDoesFindAllIds(t *testing.T) {
 
 func TestGenreCreationWithEmptyName(t *testing.T) {
 	gatewayMock := new(mocks.GenreGatewayMock)
-	useCase := DefaultCreateGenreUseCase{
+	useCase := genre_usecase.DefaultCreateGenreUseCase{
 		Gateway: gatewayMock,
 	}
-	command := CreateGenreCommand{
+	command := genre_usecase.CreateGenreCommand{
 		Name: "",
 	}
 	expectedMsg := "'name' should not be empty"

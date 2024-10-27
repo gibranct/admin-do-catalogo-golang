@@ -92,7 +92,7 @@ func (useCase DefaultCreateVideoUseCase) Execute(
 		return n, nil
 	}
 
-	n.Append(useCase.validateCategories(command.CategoryIds))
+	n.Append(useCase.ValidateCategories(command.CategoryIds))
 	n.Append(useCase.validateGenres(command.GenreIds))
 	n.Append(useCase.validateMembers(command.MemberIds))
 
@@ -112,7 +112,7 @@ func (useCase DefaultCreateVideoUseCase) Execute(
 	}
 }
 
-func (useCase DefaultCreateVideoUseCase) validateCategories(ids []int64) *notification.Notification {
+func (useCase DefaultCreateVideoUseCase) ValidateCategories(ids []int64) *notification.Notification {
 	return validateAggregate("categories", ids, useCase.CategoryGateway.ExistsByIds)
 }
 

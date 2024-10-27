@@ -1,8 +1,9 @@
-package category_usecase
+package category_usecase_test
 
 import (
 	"testing"
 
+	category_usecase "github.com.br/gibranct/admin_do_catalogo/internal/usecases/category"
 	"github.com.br/gibranct/admin_do_catalogo/pkg/mocks"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -10,10 +11,10 @@ import (
 
 func TestCategoryCreationUseCase(t *testing.T) {
 	gatewayMock := new(mocks.CategoryGatewayMock)
-	useCase := DefaultCreateCategoryUseCase{
+	useCase := category_usecase.DefaultCreateCategoryUseCase{
 		Gateway: gatewayMock,
 	}
-	command := CreateCategoryCommand{
+	command := category_usecase.CreateCategoryCommand{
 		Name:        "Drinks",
 		Description: "All cool drinks",
 	}
@@ -29,10 +30,10 @@ func TestCategoryCreationUseCase(t *testing.T) {
 
 func TestCategoryCreationWithEmptyName(t *testing.T) {
 	gatewayMock := new(mocks.CategoryGatewayMock)
-	useCase := DefaultCreateCategoryUseCase{
+	useCase := category_usecase.DefaultCreateCategoryUseCase{
 		Gateway: gatewayMock,
 	}
-	command := CreateCategoryCommand{
+	command := category_usecase.CreateCategoryCommand{
 		Name:        "",
 		Description: "All cool drinks",
 	}
