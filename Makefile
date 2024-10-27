@@ -10,8 +10,7 @@ build:
 	go build -o=bin/api ./cmd/api
 
 test: build
-	go test -short -coverprofile=bin/cov.out `go list ./... | grep -v vendor/`
-	go tool cover -func=bin/cov.out
+	go test ./... -coverprofile=bin/cov.out
 
 clean:
 	rm -rf ./bin
